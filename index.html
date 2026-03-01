@@ -1,111 +1,3081 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="author" content="IGOR">
-	<meta name="discription" content="TEST PAGE">
-	<meta name="keywords" content="test,html">
-	<title>FirstProject</title>
-	<link rel="stylesheet" href="css/main.css">
-	<!--<style></style>   Tag Style-->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Chat</title>
+  <style>
+    :root {
+      --bg0: #f5f7ff;
+      --bg1: #eaf0ff;
+      --card: rgba(255,255,255,.72);
+      --card2: rgba(255,255,255,.55);
+      --text: #101828;
+      --muted: rgba(16,24,40,.55);
+      --border: rgba(16,24,40,.10);
+      --shadow: 0 24px 70px rgba(15, 23, 42, .12);
+      --shadow2: 0 10px 30px rgba(15, 23, 42, .10);
+      --accent: #2f6bff;
+      --accent2: #74a7ff;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+    }
+    html[data-theme="dark"] {
+      --bg0: #060A14;
+      --bg1: #0B1226;
+      --card: rgba(18, 23, 35, .70);
+      --card2: rgba(18, 23, 35, .52);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.56);
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 28px 80px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.45);
+      --accent: #2f6bff;
+      --accent2: #6ea8ff;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 15% 15%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 60%),
+        radial-gradient(1000px 600px at 80% 25%, color-mix(in srgb, var(--accent2) 35%, transparent), transparent 65%),
+        radial-gradient(800px 500px at 50% 90%, color-mix(in srgb, var(--accent2) 25%, transparent), transparent 70%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      color:var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body::before {
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.28;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.35) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 45%, rgba(255,255,255,.25) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,.20) 0 2px, transparent 4px);
+      filter: blur(.2px);
+      mix-blend-mode: overlay;
+    }
+    html[data-theme="dark"] body::before { opacity:.1; }
+    .wrap { max-width: 1400px; width: 100%; margin: 0 auto; padding: 20px; min-height: 100vh; height: 100vh; box-sizing: border-box; display:flex; flex-direction:column; gap:18px; position:relative; z-index:1; }
+    .hint { font-size: 12px; color:var(--muted); padding:0 2px; }
+    .card {
+      background: var(--card);
+      background-image: linear-gradient(145deg, color-mix(in srgb, var(--card) 90%, #fff 10%), color-mix(in srgb, var(--card2) 90%, transparent));
+      border: 1px solid color-mix(in srgb, var(--border) 65%, #fff 35%);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 color-mix(in srgb, #fff 45%, transparent);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+    input { border:1px solid var(--border); border-radius:14px; height:44px; padding:0 14px; font-size:14px; outline:none; background: var(--card2); color:var(--text); transition:.2s ease; }
+    input:focus { box-shadow:0 0 0 4px rgba(47,107,255,.18); border-color: transparent; }
+    button { height:40px; border-radius:999px; padding:0 16px; border:1px solid var(--border); background: var(--card2); color:var(--text); font-weight:600; cursor:pointer; transition:.2s ease; }
+    button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    #btnLogin, #send {
+      background: linear-gradient(180deg, #6fa2ff, #3c6dff);
+      color:#fff;
+      border:0;
+      box-shadow: 0 12px 30px rgba(60,110,255,.35);
+      transition: all .2s ease;
+    }
+    #btnLogin:hover, #send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(60,110,255,.45);
+    }
+    .btnGhost { background: rgba(255,255,255,.35); }
+    .sideFooter {
+      flex: 0 0 auto;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .ghostBtn {
+      width: 100%;
+      height: 40px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ghostBtn:hover {
+      background: color-mix(in srgb, var(--card2) 65%, transparent);
+      transform: translateY(-1px);
+    }
+    html[data-theme="dark"] .ghostBtn:hover {
+      background: color-mix(in srgb, var(--card2) 85%, #fff 15%);
+    }
+    .iconBtn {
+      width: 38px;
+      min-width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .btnMini { height:40px; padding:0 12px; border-radius:999px; font-size:13px; }
+    .layout { flex:1; display:grid; grid-template-columns: 320px 1fr; gap: 18px; min-height: 0; height: 100%; align-items:stretch; }
+    .sidebar { display:flex; flex-direction:column; min-height:0; height:100%; box-sizing:border-box; overflow:hidden; overflow-x:hidden; }
+    .addUserRow {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      min-width: 0;
+    }
+    .addUserRow input {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      box-sizing: border-box;
+    }
+    .iconAction {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+      color: white;
+      background: linear-gradient(180deg, var(--accent2), var(--accent));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 24px rgba(60,110,255,.30);
+      flex: 0 0 auto;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      padding: 0;
+    }
+    .iconAction:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(60,110,255,.42);
+      filter: brightness(1.02);
+    }
+    .iconAction:active {
+      transform: translateY(0px) scale(.98);
+    }
+    .users { width: 320px; min-width: 280px; padding: 0; overflow: hidden; min-height: 0; height:100%; display: flex; flex-direction: column; gap: 0; border-radius: 20px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); }
+    .usersScroll { flex: 1; min-height: 0; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .sidebarFooter {
+      flex: 0 0 auto;
+      padding: 12px;
+      padding-bottom: 16px;
+      border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+    }
+    html[data-theme="dark"] .sidebarFooter { border-top: 1px solid rgba(255,255,255,0.08); }
+    .sidebarFooter button { width: 100%; border-radius: 999px; }
+    .sidebarFooter #btnLogout {
+      width: 100%;
+      border-radius: 999px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      text-align: center;
+      text-indent: 0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.92);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .sidebarFooter #btnLogout::before,
+    .sidebarFooter #btnLogout::after {
+      content: none !important;
+    }
+    .sidebarFooter #btnLogout > * {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    .sidebarFooter #btnLogout:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .sidebarFooter #btnLogout:active { transform: scale(0.99); }
+    .blockTitle { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
+    .sectionTitle {
+      position: relative;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      color: var(--text);
+      padding-left: 10px;
+      line-height: 1.35;
+      margin: 18px 0 8px 0;
+    }
+    html[data-theme="dark"] .sectionTitle { color: rgba(255,255,255,.92); }
+    .sectionTitle::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--accent) 80%, var(--accent2) 20%);
+    }
+    .sidebar-empty {
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+    html[data-theme="dark"] .sidebar-empty {
+      color: color-mix(in srgb, var(--muted) 72%, #fff 28%);
+    }
+    .user { display:flex; align-items:center; gap:8px; padding:11px 12px; border-radius:14px; cursor:pointer; border:1px solid transparent; background:transparent; }
+    .user:hover { background:rgba(47,107,255,.08); }
+    .user.active { background:rgba(47,107,255,.13); border-color:var(--border); }
+    .sideStatus { font-size: 12px; color:var(--muted); }
+    .badge {
+      min-width: 18px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(180deg, var(--accent2), var(--accent));
+      box-shadow: 0 8px 18px rgba(60,110,255,.35);
+      margin-left: auto;
+    }
+    .chat { display:flex; flex-direction:column; min-height:0; height: calc(100vh - 60px); border-radius: 24px; }
+    .chatTop { padding: 22px 28px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+    .chatTitle { font-weight:700; }
+    .messages { flex:1; padding:20px 28px; overflow:auto; display:flex; flex-direction:column; gap:10px; min-height:0; align-items:flex-start; }
+    .msg { display:inline-block; padding:13px 16px; border-radius:var(--radius-md); max-width:70%; width:fit-content; word-break: break-word; border:1px solid var(--border); background:rgba(255,255,255,.45); }
+    .msg.me { align-self:flex-end; margin-left:0; background:rgba(47,107,255,.12); border-color:rgba(47,107,255,.25); }
+    .meta { font-size:12px; color:var(--muted); display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .text { font-size:14px; line-height:1.35; white-space:pre-wrap; }
+    .composer { display:flex; gap:10px; padding:20px 28px; align-items:center; border-top:1px solid var(--border); }
+    .composer input { flex:1; height:48px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08); }
+    .attachBtn {
+      width: 38px;
+      min-width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
+      background: color-mix(in srgb, var(--card2) 78%, rgba(47,107,255,.2));
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255,255,255,.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
+      flex-shrink: 0;
+    }
+    .attachBtn:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--card2) 62%, rgba(47,107,255,.34));
+      border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255,255,255,.5);
+    }
+    .attachBtn:active {
+      transform: translateY(0) scale(.97);
+      background: color-mix(in srgb, var(--card2) 70%, rgba(47,107,255,.28));
+    }
+    .attachBtn:disabled { opacity: .58; box-shadow: none; transform: none; }
+    .attachHintInline { min-height: 16px; max-width: 42%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .attachList { margin-top:6px; }
+    .attBadge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border));
+      background: color-mix(in srgb, var(--card2) 72%, rgba(47,107,255,.18));
+      color: var(--text);
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+      transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .attBadge:hover {
+      background: color-mix(in srgb, var(--card2) 55%, rgba(47,107,255,.32));
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+      box-shadow: 0 8px 18px rgba(47,107,255,.22);
+    }
+    #send { flex-shrink: 0; }
+    .composerStatus {
+      margin: 0 28px 10px;
+      min-height: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .replyBar {
+      margin: 0 28px;
+      margin-top: 12px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--border) 80%, #fff 20%);
+      background: color-mix(in srgb, var(--card2) 88%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .replyBarText { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .replyBarCancel {
+      border: 0;
+      background: transparent;
+      height: 20px;
+      min-width: 20px;
+      width: 20px;
+      border-radius: 999px;
+      padding: 0;
+      line-height: 1;
+      font-size: 16px;
+      color: inherit;
+      box-shadow: none;
+    }
+    .replyBarCancel:hover { transform: none; box-shadow: none; background: rgba(0,0,0,.08); }
+    .msgReplyPreview {
+      font-size: 12px;
+      line-height: 1.25;
+      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--border) 80%, #fff 20%);
+      background: color-mix(in srgb, var(--card2) 85%, transparent);
+      padding: 4px 8px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .msgReplyPreview[data-reply-jump] {
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .msgReplyPreview[data-reply-jump]:hover {
+      color: var(--text);
+    }
+    .jumpHighlight {
+      background: color-mix(in srgb, var(--accent2) 30%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 10px 24px color-mix(in srgb, var(--accent) 22%, transparent);
+      transition: background-color .2s ease, box-shadow .2s ease;
+    }
+    .msgReplyBtn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      height: auto;
+      padding: 0;
+      box-shadow: none;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 500;
+    }
+    .msgReplyBtn:hover { transform: none; box-shadow: none; color: var(--text); }
+    .status { font-size:12px; color:var(--muted); }
+    .typingHint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      display: none;
+    }
+    .ticks { color: var(--accent2); font-weight: 700; letter-spacing: .5px; }
+    html[data-theme="light"] .ticks { color: var(--accent); }
+    .sep { height:1px; background:var(--border); margin:4px 0; }
+    .authScreen { flex: 1; display:none; align-items:center; justify-content:center; min-height:0; }
+    .authShell { width:min(720px, 92vw); padding: 36px; border-radius: 28px; display:flex; flex-direction:column; gap:24px; overflow: visible; }
+    .brandBig {
+      font-size: clamp(40px, 6vw, 66px);
+      display: block;
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 0 0 18px 0;
+      padding: 10px 0 6px 0;
+      overflow: visible;
+      background: linear-gradient(90deg, #3c6dff, #7fb0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align:center;
+    }
+    .authPanel { display:flex; flex-direction:column; gap:14px; width:100%; max-width:100%; min-width:0; overflow: visible; }
+    .authPanel input { width:100%; max-width:100%; height:54px; font-size:17px; padding:0 18px; border-radius:16px; }
+    .authPanel button { width:100%; max-width:100%; height:46px; border-radius:999px; font-size:15px; }
+    .authPanel #authStatus { min-height:18px; text-align:center; width:100%; }
+    #app { flex: 1; min-height: 0; }
+    .chatTop .badge { display:none; }
+    body.isLoggedOut .authScreen { display:flex; }
+    body.isLoggedOut #app { display:none !important; }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .wrap { height:auto; }
+      .users { width: 100%; min-width: 0; }
+      .chat { height: auto; min-height: 60vh; }
+      .authShell { padding: 30px 22px; }
+    }
+    .modalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 12, 24, .38);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 30;
+    }
+    .modalOverlay.isOpen { display: flex; }
+    .groupModal {
+      width: min(620px, 100%);
+      max-height: min(86vh, 760px);
+      padding: 24px;
+      border-radius: var(--radius-xl);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow: hidden;
+    }
+    .modalTitle { margin: 0; font-size: 24px; line-height: 1.2; }
+    .modalLabel { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; display: block; }
+    .fieldError { font-size: 12px; color: #d2445f; min-height: 18px; margin-top: 4px; }
+    .errorInput { box-shadow: 0 0 0 4px rgba(210,68,95,.16); border-color: rgba(210,68,95,.6); }
+    .chips {
+      min-height: 48px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--card2);
+      padding: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-content: flex-start;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 18%, var(--card2));
+      border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
+      font-size: 13px;
+      line-height: 1;
+    }
+    .chipRemove {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0;
+      font-size: 16px;
+      line-height: 1;
+      border-radius: 999px;
+    }
+    .chipRemove:hover { background: rgba(0,0,0,.08); box-shadow: none; transform: none; }
+    .modalContactsList {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card2);
+      padding: 8px;
+      overflow-y: auto;
+      min-height: 120px;
+      max-height: 260px;
+    }
+    .modalContactRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .modalContactRow + .modalContactRow { margin-top: 2px; }
+    .modalContactRow:hover { background: rgba(47,107,255,.08); }
+    .contactName { font-size: 14px; }
+    .contactAddBtn { width: 32px; min-width: 32px; height: 32px; font-size: 18px; box-shadow: none; }
+    .contactAddBtn:disabled { opacity: .55; }
+    .modalActions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+    .sidebar-logout-btn{
+      color: inherit !important;     /* важно: перебить button { color:#fff } */
+    }
+    .chat-title{
+      font-weight: 600;
+      color: inherit;
+      opacity: 1;
+    }
+
+    /* для группы — лёгкая плашка, чтобы читалось на стекле */
+    .group-title{
+      font-weight: 650;
+      color: inherit;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(6px);
+    }
+
+    html[data-theme="light"] .group-title{
+      background: rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.10);
+    }
+    /* сам текст удалённого — заметнее */
+    .text.isDeleted{
+      color: rgba(0,0,0,0.72);
+      font-style: italic;
+      opacity: 1;
+    }
+
+    /* пузырь удалённого — чуть отличается (контраст за счёт рамки и фона) */
+    .msg.isDeletedBubble{
+      border: 1px dashed rgba(0,0,0,0.28);
+      background: rgba(255,255,255,0.10);
+    }
+
+    /* если у проекта есть селекторы темы body.dark / body.light — добавь корректировки */
+    body.dark .text.isDeleted{
+      color: rgba(255,255,255,0.72);
+    }
+    body.dark .msg.isDeletedBubble{
+      border: 1px dashed rgba(255,255,255,0.22);
+      background: rgba(0,0,0,0.10);
+    }
+
+    html[data-theme="dark"] .text.isDeleted{
+      color: rgba(255,255,255,0.72);
+    }
+    html[data-theme="dark"] .msg.isDeletedBubble{
+      border: 1px dashed rgba(255,255,255,0.22);
+      background: rgba(0,0,0,0.10);
+    }
+    .meta .editedTag { font-size:12px; color:#5b6278; }
+    .msg .moreBtn{ display:none; border:none; background:transparent; cursor:pointer; padding:2px 6px; border-radius:8px; opacity:.85; }
+    .msg:hover .moreBtn{ display:inline-flex; align-items:center; justify-content:center; }
+    .msg .moreBtn:hover{ opacity:1; background: rgba(255,255,255,0.08); }
+    body.light .msg .moreBtn:hover{ background: rgba(0,0,0,0.06); }
+
+    .msgMenu{
+      position: fixed;
+      z-index: 9999;
+      min-width: 160px;
+      border-radius: 12px;
+      padding: 6px;
+      backdrop-filter: blur(10px);
+      background: rgba(20,22,28,0.72);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+    body.light .msgMenu{
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(0,0,0,0.10);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+    .msgMenu button{
+      width:100%;
+      text-align:left;
+      border:none;
+      background:transparent;
+      padding:10px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      color: inherit;
+    }
+    .msgMenu button:hover{
+      background: rgba(255,255,255,0.10);
+    }
+    body.light .msgMenu button:hover{
+      background: rgba(0,0,0,0.06);
+    }
+    .msgMenu .danger{ color: #e35b5b; }
+    .msg .editBox {
+      width: 100%;
+      min-height: 66px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card2);
+      color: var(--text);
+      padding: 8px 10px;
+      resize: vertical;
+      font: inherit;
+      line-height: 1.35;
+    }
+    .msg .editActions {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .msg .editActions button {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
 </head>
 
 <body>
-	<!--<aside></aside>-->
-	<header>
+  <div class="wrap">
+    <div id="authScreen" class="authScreen">
+      <div class="authShell card">
+        <div class="brandBig">Yasya.online</div>
+        <div id="authPanel" class="authPanel">
+        <input id="username" placeholder="Имя пользователя" />
+        <input id="password" type="password" placeholder="Пароль" />
+
+        <button id="btnLogin">Войти</button>
+        <button id="btnRegister">Зарегистрироваться</button>
+
+        <span class="hint" id="authStatus"></span>
+      </div>
+      </div>
+    </div>
+
+    <div id="app" style="display:none;">
+      <div class="layout">
+        <div class="card users sidebar">
+          <div class="usersScroll">
+            <div>
+              <div class="blockTitle">
+                <div class="sectionTitle">Группы</div>
+                <button id="btnCreateGroup" class="iconAction" type="button" title="Создать группу" aria-label="Создать группу" disabled>+</button>
+              </div>
+              <div id="groupsList" class="sidebar-empty">Пока нет групп</div>
+            </div>
+
+            <div class="sep"></div>
+
+            <div>
+              <div class="sectionTitle">Чаты</div>
+              <div class="addUserRow" style="margin-bottom:8px;">
+                <input id="contactUsername" placeholder="Имя пользователя" />
+                <button id="btnAddContact" class="iconAction" type="button" title="Отправить заявку" aria-label="Отправить заявку" disabled>+</button>
+              </div>
+              <div id="contactsList" class="sidebar-empty">Пока нет контактов</div>
+              <div class="sectionTitle">Входящие заявки</div>
+              <div id="incomingRequestsList" class="sidebar-empty">Заявок нет</div>
+              <div class="sectionTitle">Исходящие заявки</div>
+              <div id="outgoingRequestsList" class="sidebar-empty">Нет исходящих</div>
+            </div>
+          </div>
+
+          <div class="sidebarFooter">
+            <button id="btnLogout" class="btnGhost sidebar-logout-btn" type="button" style="display:none;">Выйти</button>
+          </div>
+
+        </div>
+
+        <div class="card chat">
+          <div class="chatTop">
+            <div>
+              <div class="chatTitle" id="chatTitle">Выберите чат слева, чтобы начать общение</div>
+              <div class="status">Напишите сообщение — оно появится здесь.</div>
+              <div class="typingHint" id="typingHint" aria-live="polite"></div>
+              <div class="typingHint" id="groupTypingHint" aria-live="polite"></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button id="themeToggle" class="iconBtn" type="button" aria-label="Сменить тему">☾</button>
+              <button id="btnDeleteGroup" class="btnMini btnGhost" style="display:none;">Удалить группу</button>
+            </div>
+          </div>
+
+          <div class="messages" id="messages"></div>
+
+          <div id="replyBar" class="replyBar" aria-live="polite">
+            <span id="replyBarText" class="replyBarText"></span>
+            <button id="replyCancel" class="replyBarCancel" type="button" aria-label="Отменить ответ">×</button>
+          </div>
+
+          <div class="composer">
+            <input id="message" placeholder="Сообщение…" disabled />
+            <div id="attachHint" class="hint attachHintInline"></div>
+            <input id="attachment" type="file" accept="image/*" multiple disabled style="display:none" />
+            <button type="button" id="attachBtn" class="attachBtn" title="Прикрепить" aria-label="Прикрепить" disabled>📎</button>
+            <button id="send" disabled>Отправить</button>
+          </div>
+          <div id="sendStatus" class="hint composerStatus" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
-		<!--Меня нужно закомментировать!-->
-		<a name="UpPage"></a>
-		<a href="#DownPage">DOWN</a>
+  <div id="createGroupModal" class="modalOverlay" aria-hidden="true">
+    <div class="card groupModal" role="dialog" aria-modal="true" aria-labelledby="createGroupModalTitle">
+      <h2 id="createGroupModalTitle" class="modalTitle">Создать группу</h2>
 
+      <div>
+        <label for="groupModalName" class="modalLabel">Название группы</label>
+        <input id="groupModalName" type="text" placeholder="Например, Команда" />
+      </div>
 
+      <div>
+        <span class="modalLabel">Участники</span>
+        <div id="groupSelectedChips" class="chips"></div>
+        <div id="groupParticipantsError" class="fieldError"></div>
+      </div>
 
+      <div>
+        <span class="modalLabel">Список контактов</span>
+        <div id="groupContactsList" class="modalContactsList"></div>
+      </div>
 
-		<p>Меня нужно сделать содержимым 1-го абзаца!</p>
-	</header>
-	<main>
-		<span hidden="Меня нужно сделать содержимым 1-го абзаца!"></span>
-		<abbr title="ABBRIVEATURA"> ABBR</abbr>
-		<ol start="1" type="I">
-			<li><big>Fi</big><small>rst</small></li>
-			<li><strong>Second</strong></li>
-			<li><i>Third</i></li>
-			<li>Fou<sup>rth</sup></li>
-			<li>Fi<sub>fth</sub></li>
-		</ol>
-		<ul type="circle">
-			<li><big>Fi</big><small>rst</small></li>
-			<li><strong>Second</strong></li>
-			<li><i>Third</i></li>
-			<li>Fou<sup>rth</sup></li>
-			<li>Fi<sub>fth</sub></li>
-		</ul>
-		<p title="Podskazka">TEXT</p>
-		<ins>TEXT</ins>
-		<p><s>DELETED</s></p>
-		<a href="https://vk.com" target="_blank" title="PRESS ME">VK</a><br>
-		<a href="about.html" target="_blank" title="ABOUT ME"><i>ABOUT ME</i></a><br>
-		<a href="#UpPage">UP</a>
-		<a name="DownPage"></a><br>
-		<a href="mailto:arcadepdg@yandex.ru"><b>EmailUS</b></a><br>
-		<img src="https://avatars.mds.yandex.net/i?id=6f28a7580d9f6a5d8de392eede993df7f2636eb9-9181298-images-thumbs&n=13"
-			width="70px" title="KARTINKA" alt="Error">
-		<footer>
-			<div>DivText1</div>
-			<div>DivText1</div>
-			<span>SpanText</span>
-			<form action="" method="post">
-				<label for="Username">Your Name</label>
-				<input type="text" placeholder="Enter Your Name" value="My Name Is" maxlength="12" name="Username"
-					id="Username"><br><br>
-				<label for="UserPassword">Enter Password</label>
-				<input type="password" placeholder="Enter Your Password" maxlength="12" name="UserPassword"
-					id="UserPassword"><br><br>
-				<label for="UserMail">Enter Your Mail</label>
-				<input type="email" placeholder="Enter Your Email" id="UserMail"><br><br>
-				<label for="UserURL">Enter Your URL</label>
-				<input type="url" placeholder="Enter Your URL" id="UserURL"><br><br>
-				<input type="color"><br><br>
-				<input type="date">
-				<input type="time"><br><br>
-				<label for="Yes">Yes</label>
-				<input type="checkbox" id="Yes"><br><br>
-				<label for="No">No</label>
-				<input type="checkbox" id="No"><br><br>
-				<label for="gender">Male</label>
-				<input type="radio" name="gender"><br>
-				<label for="gender">Female</label>
-				<input type="radio" name="gender"><br><br>
-				<input type="file"><br><br>
-				<input type="button" value="Otpravka">
-				<input type="submit" value="Submit">
-				<input type="reset" value="Clear"><br><br>
-				<textarea placeholder="Enter Text" maxlength="30" name="TextArea" required
-					id="TextArea1">Test</textarea><br>
-				<input type="submit" name="TextArea"><br><br>
-				<button type="reset" name="TextArea">Reset</button><br><br>
-				<select>
-					<option>Dota</option>
-					<option>PUBG</option>
-					<option selected>BG3</option>
-					<option disabled>GTFO</option>
-				</select>
-			</form><br><br>
-			<progress max="100" value="35">Loading</progress><br><br>
-			<details>
-				<summary>Podrobnee</summary>
-				Lorem ipsum dolor sit amet.
-			</details>
-	</main>
-	</footer>
+      <div class="modalActions">
+        <button id="btnCancelCreateGroup" class="btnGhost" type="button">Отмена</button>
+        <button id="btnConfirmCreateGroup" type="button">Создать</button>
+      </div>
+    </div>
+  </div>
 
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const THEME_KEY = "yasya_theme";
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", initialTheme);
 
+    function setTheme(next) {
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem(THEME_KEY, next);
+      const btn = document.getElementById("themeToggle");
+      if (btn) btn.textContent = next === "dark" ? "☀︎" : "☾";
+    }
 
+    const elApp = document.getElementById("app");
+    const elMessages = document.getElementById("messages");
+    const elGroupsList = document.getElementById("groupsList");
+    const elContactsList = document.getElementById("contactsList");
+    const elIncomingRequestsList = document.getElementById("incomingRequestsList");
+    const elOutgoingRequestsList = document.getElementById("outgoingRequestsList");
+    const elMessage = document.getElementById("message");
+    const elAttachment = document.getElementById("attachment");
+    const elAttachBtn = document.getElementById("attachBtn");
+    const elAttachHint = document.getElementById("attachHint");
+    const elSendStatus = document.getElementById("sendStatus");
+    const elSend = document.getElementById("send");
+    const elChatTitle = document.getElementById("chatTitle");
+    const elReplyBar = document.getElementById("replyBar");
+    const elReplyBarText = document.getElementById("replyBarText");
+    const elReplyCancel = document.getElementById("replyCancel");
+    const elTypingHint = document.getElementById("typingHint");
+    const elGroupTypingHint = document.getElementById("groupTypingHint");
 
-	<script src="js/main.js"></script>
+    const elUsername = document.getElementById("username");
+    const elPassword = document.getElementById("password");
+    const elBtnRegister = document.getElementById("btnRegister");
+    const elBtnLogin = document.getElementById("btnLogin");
+    const elBtnLogout = document.getElementById("btnLogout");
+    const elAuthStatus = document.getElementById("authStatus");
+    const elAuthScreen = document.getElementById("authScreen");
+    const elAuthPanel = document.getElementById("authPanel");
+    const elBtnCreateGroup = document.getElementById("btnCreateGroup");
+    const elBtnDeleteGroup = document.getElementById("btnDeleteGroup");
+    const elContactUsername = document.getElementById("contactUsername");
+    const elBtnAddContact = document.getElementById("btnAddContact");
+    const elThemeToggle = document.getElementById("themeToggle");
+    const elCreateGroupModal = document.getElementById("createGroupModal");
+    const elGroupModalName = document.getElementById("groupModalName");
+    const elGroupSelectedChips = document.getElementById("groupSelectedChips");
+    const elGroupParticipantsError = document.getElementById("groupParticipantsError");
+    const elGroupContactsList = document.getElementById("groupContactsList");
+    const elBtnCancelCreateGroup = document.getElementById("btnCancelCreateGroup");
+    const elBtnConfirmCreateGroup = document.getElementById("btnConfirmCreateGroup");
+
+    setTheme(initialTheme);
+    if (elThemeToggle) {
+      elThemeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "light";
+        setTheme(current === "dark" ? "light" : "dark");
+      });
+    }
+
+    let socket = null;
+    let me = null;
+    let meId = null;
+    let token = null;
+    const BASE_TITLE = document.title || "Yasya.online";
+    let unreadCount = 0;
+
+    function updateTitle() {
+      document.title = unreadCount > 0 ? `(${unreadCount}) ${BASE_TITLE}` : BASE_TITLE;
+    }
+
+    const unreadByKey = new Map();
+
+    function keyForPeer(userId) { return `p:${Number(userId)}`; }
+    function keyForGroup(groupId) { return `g:${Number(groupId)}`; }
+    function getActiveKey() {
+      if (!activeChat) return null;
+      if (activeChat.type === "dm") return keyForPeer(activeChat.userId);
+      if (activeChat.type === "group") return keyForGroup(activeChat.groupId);
+      return null;
+    }
+
+    function sumUnread() {
+      let total = 0;
+      unreadByKey.forEach((count) => { total += Number(count) || 0; });
+      return total;
+    }
+
+    function renderUnreadBadge(el, count) {
+      if (!el) return;
+      let badge = el.querySelector(".badge");
+      if (!badge) {
+        badge = document.createElement("span");
+        badge.className = "badge";
+        badge.style.display = "none";
+        el.appendChild(badge);
+      }
+      if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : String(count);
+        badge.style.display = "inline-flex";
+      } else {
+        badge.textContent = "";
+        badge.style.display = "none";
+      }
+    }
+
+    function renderUnreadBadges() {
+      document.querySelectorAll(".user[data-chat-key]").forEach((el) => {
+        const key = el.dataset.chatKey;
+        renderUnreadBadge(el, unreadByKey.get(key) || 0);
+      });
+    }
+
+    function updateUnreadTitle() {
+      unreadCount = sumUnread();
+      updateTitle();
+    }
+
+    function incUnread(key) {
+      if (!key) return;
+      unreadByKey.set(key, (unreadByKey.get(key) || 0) + 1);
+      renderUnreadBadges();
+      updateUnreadTitle();
+    }
+
+    function resetUnreadKey(key) {
+      if (!key) return;
+      unreadByKey.delete(key);
+      renderUnreadBadges();
+      updateUnreadTitle();
+    }
+
+    function resetUnread() {
+      resetUnreadKey(getActiveKey());
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) resetUnread();
+    });
+    window.addEventListener("focus", resetUnread);
+
+    // activeChat:
+    // { type:"dm", userId, username, socketId }
+    // { type:"group", groupId, title, createdBy }
+    let activeChat = null;
+
+    const dmHistory = {};
+    const groupHistory = {};
+    const dmMsgDomById = new Map();
+    const messageAttachmentKeys = new Map();
+    let gallery = { isOpen:false, keys:[], index:0, cache:new Map() };
+    let usersStatusCache = new Map();
+    let contactsCache = [];
+    let groupsCache = [];
+    let jumpHighlightTimer = null;
+    const selectedParticipants = new Set();
+    let activeMsgMenu = null;
+    let pendingReply = null; // { id, fromUsername, text }
+    let typingPeers = new Map(); // fromUserId -> timeoutId
+    let typingActivePeerUserId = null;
+    let typingStopTimer = null;
+    let isTyping = false;
+    let groupTyping = new Map(); // key `${groupId}:${fromUserId}` -> timeoutId
+    let groupTypingActiveUserId = null;
+    let groupTypingStopTimer = null;
+    let isGroupTyping = false;
+
+    let galleryOverlay = null;
+    let galleryImage = null;
+    let galleryStatus = null;
+    let galleryPrev = null;
+    let galleryNext = null;
+    let galleryCounter = null;
+
+    function truncateReplyText(text, maxLen = 80) {
+      const raw = typeof text === "string" ? text.replace(/\s+/g, " ").trim() : "";
+      if (!raw) return "";
+      return raw.length > maxLen ? `${raw.slice(0, maxLen)}…` : raw;
+    }
+
+    function renderReplyBar() {
+      if (!elReplyBar || !elReplyBarText) return;
+      if (!pendingReply || !pendingReply.id) {
+        elReplyBar.style.display = "none";
+        elReplyBarText.textContent = "";
+        return;
+      }
+      const shortText = truncateReplyText(pendingReply.text || "", 80) || "(без текста)";
+      elReplyBarText.textContent = `Ответ на: ${pendingReply.fromUsername || "unknown"}: ${shortText}`;
+      elReplyBar.style.display = "flex";
+    }
+
+    function clearPendingReply() {
+      pendingReply = null;
+      renderReplyBar();
+    }
+
+    function resolveDmUsername(userId) {
+      const contact = getContactById(userId);
+      return contact?.username || (activeChat?.type === "dm" && Number(activeChat.userId) === Number(userId) ? activeChat.username : "");
+    }
+
+    function hideTypingHint() {
+      if (!elTypingHint) return;
+      elTypingHint.style.display = "none";
+      elTypingHint.textContent = "";
+      typingActivePeerUserId = null;
+    }
+
+    function showTypingHint(fromUserId) {
+      if (!elTypingHint) return;
+      const username = resolveDmUsername(fromUserId);
+      elTypingHint.textContent = username ? `${username} печатает…` : "Печатает…";
+      elTypingHint.style.display = "block";
+      typingActivePeerUserId = Number(fromUserId);
+    }
+
+    function hideGroupTypingHint() {
+      if (!elGroupTypingHint) return;
+      elGroupTypingHint.style.display = "none";
+      elGroupTypingHint.textContent = "";
+      groupTypingActiveUserId = null;
+    }
+
+    function showGroupTypingHint(fromUserId, fromUsername) {
+      if (!elGroupTypingHint) return;
+      elGroupTypingHint.textContent = `${fromUsername || "Кто-то"} печатает…`;
+      elGroupTypingHint.style.display = "block";
+      groupTypingActiveUserId = Number(fromUserId);
+    }
+
+    function clearTypingPeerTimeout(fromUserId) {
+      const uid = Number(fromUserId);
+      const timeoutId = typingPeers.get(uid);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      typingPeers.delete(uid);
+    }
+
+    function clearGroupTypingTimeout(groupId, fromUserId) {
+      const gid = Number(groupId);
+      const uid = Number(fromUserId);
+      if (!gid || !uid) return;
+      const key = `${gid}:${uid}`;
+      const timeoutId = groupTyping.get(key);
+      if (timeoutId) clearTimeout(timeoutId);
+      groupTyping.delete(key);
+    }
+
+    function emitTypingStop() {
+      if (!socket || !isTyping || activeChat?.type !== "dm" || !activeChat.userId) return;
+      socket.emit("typing:stop", { peerUserId: Number(activeChat.userId) });
+      isTyping = false;
+      if (typingStopTimer) {
+        clearTimeout(typingStopTimer);
+        typingStopTimer = null;
+      }
+    }
+
+    function emitGroupTypingStop() {
+      if (!socket || !isGroupTyping || activeChat?.type !== "group" || !activeChat.groupId) return;
+      socket.emit("group:typing:stop", { groupId: Number(activeChat.groupId) });
+      isGroupTyping = false;
+      if (groupTypingStopTimer) {
+        clearTimeout(groupTypingStopTimer);
+        groupTypingStopTimer = null;
+      }
+    }
+
+    function resetTypingState() {
+      if (typingStopTimer) {
+        clearTimeout(typingStopTimer);
+        typingStopTimer = null;
+      }
+      if (groupTypingStopTimer) {
+        clearTimeout(groupTypingStopTimer);
+        groupTypingStopTimer = null;
+      }
+      emitTypingStop();
+      emitGroupTypingStop();
+    }
+
+    function handleTypingInput() {
+      if (!socket) return;
+
+      if (activeChat?.type === "dm" && activeChat.userId) {
+        if (!isTyping) {
+          socket.emit("typing:start", { peerUserId: Number(activeChat.userId) });
+          isTyping = true;
+        }
+
+        if (typingStopTimer) clearTimeout(typingStopTimer);
+        typingStopTimer = setTimeout(() => {
+          resetTypingState();
+        }, 800);
+        return;
+      }
+
+      if (activeChat?.type === "group" && activeChat.groupId) {
+        if (!isGroupTyping) {
+          socket.emit("group:typing:start", { groupId: Number(activeChat.groupId) });
+          isGroupTyping = true;
+        }
+
+        if (groupTypingStopTimer) clearTimeout(groupTypingStopTimer);
+        groupTypingStopTimer = setTimeout(() => {
+          emitGroupTypingStop();
+        }, 800);
+      }
+    }
+
+    function buildPendingReplyPreview() {
+      if (!pendingReply?.id) return null;
+      return {
+        id: pendingReply.id,
+        from_username: pendingReply.fromUsername || "unknown",
+        text: truncateReplyText(pendingReply.text || "", 80),
+      };
+    }
+
+    function setPendingReplyFromMessage(message) {
+      if (!message) return;
+      pendingReply = {
+        id: message.id,
+        fromUsername: message.fromUsername || message.from_username || message.name || "unknown",
+        text: message.text || "",
+      };
+      renderReplyBar();
+      if (elMessage) elMessage.focus();
+    }
+
+    function buildReplyPreview(message, context = {}) {
+      const hasReplyId = message?.reply_to_message_id != null;
+      if (!hasReplyId) return null;
+
+      const reply = document.createElement("div");
+      reply.className = "msgReplyPreview";
+      reply.dataset.replyJump = String(message.reply_to_message_id);
+      if (context.chatKind) reply.dataset.chatKind = context.chatKind;
+      if (context.peerId != null) reply.dataset.peerId = String(context.peerId);
+      if (context.groupId != null) reply.dataset.groupId = String(context.groupId);
+
+      if (message.reply_to) {
+        const from = message.reply_to.from_username || message.reply_to.fromUsername || "unknown";
+        const text = truncateReplyText(message.reply_to.text || "", 80);
+        reply.textContent = `↩ ${from}: ${text || "(без текста)"}`;
+      } else {
+        reply.textContent = "↩ Сообщение недоступно";
+      }
+      return reply;
+    }
+
+    function ensureGalleryOverlay() {
+      if (galleryOverlay) return;
+      galleryOverlay = document.createElement("div");
+      galleryOverlay.id = "galleryOverlay";
+      galleryOverlay.style.cssText = "position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(8,12,24,.56);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:9999;padding:16px;";
+      galleryOverlay.innerHTML = `
+        <div style="width:min(94vw,980px);max-height:92vh;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;" data-gallery-content>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <button type="button" data-gallery-prev style="min-width:44px;">←</button>
+            <div data-gallery-counter style="font-size:13px;color:#fff;opacity:.9;">0 / 0</div>
+            <button type="button" data-gallery-next style="min-width:44px;">→</button>
+            <button type="button" data-gallery-close>Закрыть</button>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:center;min-height:240px;max-height:78vh;background:rgba(0,0,0,.22);border-radius:12px;overflow:hidden;">
+            <img data-gallery-img alt="Вложение" style="max-width:100%;max-height:78vh;display:none;object-fit:contain;" />
+            <div data-gallery-status style="color:#fff;opacity:.92;padding:12px;text-align:center;">Загрузка…</div>
+          </div>
+        </div>`;
+      document.body.appendChild(galleryOverlay);
+
+      galleryImage = galleryOverlay.querySelector("[data-gallery-img]");
+      galleryStatus = galleryOverlay.querySelector("[data-gallery-status]");
+      galleryPrev = galleryOverlay.querySelector("[data-gallery-prev]");
+      galleryNext = galleryOverlay.querySelector("[data-gallery-next]");
+      galleryCounter = galleryOverlay.querySelector("[data-gallery-counter]");
+
+      galleryOverlay.addEventListener("click", (e) => {
+        if (e.target === galleryOverlay) closeGallery();
+      });
+      galleryOverlay.querySelector("[data-gallery-content]").addEventListener("click", (e) => e.stopPropagation());
+      galleryOverlay.querySelector("[data-gallery-close]").addEventListener("click", closeGallery);
+      galleryPrev.addEventListener("click", () => {
+        if (gallery.index > 0) {
+          gallery.index -= 1;
+          renderGallery();
+        }
+      });
+      galleryNext.addEventListener("click", () => {
+        if (gallery.index < gallery.keys.length - 1) {
+          gallery.index += 1;
+          renderGallery();
+        }
+      });
+    }
+
+    function onGalleryKeyDown(e) {
+      if (!gallery.isOpen) return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeGallery();
+      } else if (e.key === "ArrowLeft" && gallery.index > 0) {
+        e.preventDefault();
+        gallery.index -= 1;
+        renderGallery();
+      } else if (e.key === "ArrowRight" && gallery.index < gallery.keys.length - 1) {
+        e.preventDefault();
+        gallery.index += 1;
+        renderGallery();
+      }
+    }
+
+    function openGallery(keys, startIndex) {
+      ensureGalleryOverlay();
+      if (!Array.isArray(keys) || !keys.length) return;
+      gallery.keys = keys;
+      gallery.index = Math.max(0, Math.min(Number(startIndex) || 0, keys.length - 1));
+      gallery.isOpen = true;
+      galleryOverlay.style.display = "flex";
+      document.addEventListener("keydown", onGalleryKeyDown);
+      renderGallery();
+    }
+
+    function closeGallery() {
+      if (!galleryOverlay) return;
+      gallery.isOpen = false;
+      galleryOverlay.style.display = "none";
+      document.removeEventListener("keydown", onGalleryKeyDown);
+    }
+
+    async function ensureUrl(key) {
+      if (gallery.cache.has(key)) return gallery.cache.get(key);
+      const r = await apiGet(`/api/uploads/presign-get?key=${encodeURIComponent(key)}`);
+      const url = r?.url || (r?.ok ? r?.url : null);
+      if (!url) throw new Error("presigned url missing");
+      gallery.cache.set(key, url);
+      return url;
+    }
+
+    async function renderGallery() {
+      if (!gallery.isOpen || !galleryOverlay) return;
+      const total = gallery.keys.length;
+      const currentKey = gallery.keys[gallery.index];
+      if (!currentKey) return;
+
+      galleryCounter.textContent = `${gallery.index + 1} / ${total}`;
+      galleryPrev.disabled = gallery.index <= 0;
+      galleryNext.disabled = gallery.index >= total - 1;
+      galleryImage.style.display = "none";
+      galleryImage.removeAttribute("src");
+      galleryStatus.textContent = "Загрузка…";
+      galleryStatus.style.display = "block";
+
+      const expectedKey = currentKey;
+      try {
+        const url = await ensureUrl(expectedKey);
+        if (!gallery.isOpen || gallery.keys[gallery.index] !== expectedKey) return;
+        galleryImage.src = url;
+        galleryImage.style.display = "block";
+        galleryStatus.style.display = "none";
+      } catch (e) {
+        if (!gallery.isOpen || gallery.keys[gallery.index] !== expectedKey) return;
+        galleryStatus.textContent = `Не удалось открыть вложение (${e.message || "ошибка"})`;
+        galleryStatus.style.display = "block";
+      }
+    }
+
+    function getAttachmentGroupId(m) {
+      if (m?.id != null) return `msg:${Number(m.id)}`;
+      return `tmp:${Number(m?.fromUserId || 0)}:${Number(m?.ts || Date.now())}:${String(m?.text || "").slice(0, 16)}`;
+    }
+
+    function collectAttachmentItems(attachments) {
+      return (Array.isArray(attachments) ? attachments : [])
+        .map((a, idx) => ({
+          key: a?.key || "",
+          type: a?.type || null,
+          order: Number.isFinite(Number(a?.order)) ? Number(a.order) : idx,
+        }))
+        .filter((a) => a.key)
+        .sort((a, b) => a.order - b.order);
+    }
+
+    function resolveCreatedMs(m) {
+      const created = m?.createdAtMs ?? m?.created_at_ms ?? m?.createdAt ?? m?.created_at ?? m?.ts;
+      if (typeof created === "number") return created;
+      if (created instanceof Date) return created.getTime();
+      if (typeof created === "string") {
+        const parsed = Date.parse(created);
+        return Number.isFinite(parsed) ? parsed : NaN;
+      }
+      return NaN;
+    }
+
+    function canManageMessage(m) {
+      const fromUserId = Number(m?.fromUserId ?? m?.from_user_id);
+      if (!meId || fromUserId !== Number(meId)) return false;
+      if (m?.deletedAt || m?.deleted_at) return false;
+      const createdMs = resolveCreatedMs(m);
+      if (!Number.isFinite(createdMs)) return false;
+      return Date.now() - createdMs <= 60 * 60 * 1000;
+    }
+
+    function closeInlineEdit(wrap, restoreText) {
+      if (!wrap) return;
+      const editBox = wrap.querySelector(".editBox");
+      if (!editBox) return;
+      const body = wrap.querySelector(".text");
+      const actions = wrap.querySelector(".editActions");
+      if (restoreText != null && body) body.textContent = restoreText;
+      if (body) body.style.display = "";
+      editBox.remove();
+      if (actions) actions.remove();
+    }
+
+    function closeMsgMenu() {
+      if (!activeMsgMenu) return;
+      document.removeEventListener("click", activeMsgMenu.onDocClick, true);
+      document.removeEventListener("keydown", activeMsgMenu.onDocKeyDown, true);
+      window.removeEventListener("resize", activeMsgMenu.onWindowClose, true);
+      elMessages.removeEventListener("scroll", activeMsgMenu.onWindowClose, true);
+      activeMsgMenu.el.remove();
+      activeMsgMenu = null;
+    }
+
+    function openInlineEdit({ wrap, message, mode }) {
+      closeMsgMenu();
+      if (!wrap || !message) return;
+      if (wrap.querySelector(".editBox")) return;
+      const body = wrap.querySelector(".text");
+      if (!body || body.classList.contains("isDeleted")) return;
+      const originalText = typeof message.text === "string" ? message.text : (body.textContent || "");
+
+      const editBox = document.createElement("textarea");
+      editBox.className = "editBox";
+      editBox.maxLength = 2000;
+      editBox.value = originalText;
+
+      const actions = document.createElement("div");
+      actions.className = "editActions";
+      const saveBtn = document.createElement("button");
+      saveBtn.type = "button";
+      saveBtn.textContent = "Сохранить";
+      const cancelBtn = document.createElement("button");
+      cancelBtn.type = "button";
+      cancelBtn.textContent = "Отмена";
+      cancelBtn.className = "btnGhost";
+      actions.appendChild(saveBtn);
+      actions.appendChild(cancelBtn);
+
+      const cancel = () => closeInlineEdit(wrap, originalText);
+
+      const save = () => {
+        const newText = editBox.value.trim().slice(0, 2000);
+        if (!newText || newText === originalText.trim()) {
+          cancel();
+          return;
+        }
+
+        const payload = { messageId: Number(message.id), newText };
+        if (mode === "group") payload.groupId = Number(activeChat?.groupId);
+
+        try {
+          if (mode === "group") socket.emit("groupMessage:edit", payload);
+          else socket.emit("message:edit", payload);
+        } finally {
+          closeInlineEdit(wrap);
+        }
+      };
+
+      saveBtn.addEventListener("click", save);
+      cancelBtn.addEventListener("click", cancel);
+      editBox.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          cancel();
+          return;
+        }
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          save();
+        }
+      });
+
+      body.style.display = "none";
+      body.insertAdjacentElement("afterend", editBox);
+      editBox.insertAdjacentElement("afterend", actions);
+      editBox.focus();
+      editBox.selectionStart = editBox.value.length;
+      editBox.selectionEnd = editBox.value.length;
+    }
+
+    function openMsgMenu({ btn, wrap, message, mode }) {
+      closeMsgMenu();
+      if (!btn || !wrap || !message) return;
+
+      const hasAttachment = !!message.attachment_key || !!message.attachment_type;
+
+      const menu = document.createElement("div");
+      menu.className = "msgMenu";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.textContent = "Редактировать";
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "danger";
+      deleteBtn.textContent = "Удалить";
+
+      if (!hasAttachment) menu.appendChild(editBtn);
+      menu.appendChild(deleteBtn);
+      document.body.appendChild(menu);
+
+      const r = btn.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const top = Math.min(window.innerHeight - menuRect.height - 8, r.bottom + 6);
+      const left = Math.max(8, Math.min(window.innerWidth - menuRect.width - 8, r.right - menuRect.width));
+      menu.style.top = `${Math.max(8, top)}px`;
+      menu.style.left = `${left}px`;
+
+      if (!hasAttachment) {
+        editBtn.addEventListener("click", () => {
+          closeMsgMenu();
+          openInlineEdit({ wrap, message, mode });
+        });
+      }
+
+      deleteBtn.addEventListener("click", () => {
+        if (!confirm("Удалить сообщение?")) return;
+        if (mode === "group") {
+          socket.emit("groupMessage:delete", { messageId: Number(message.id), groupId: Number(activeChat?.groupId) });
+        } else {
+          socket.emit("message:delete", { messageId: Number(message.id) });
+        }
+        closeMsgMenu();
+      });
+
+      const onDocClick = (e) => {
+        if (!menu.contains(e.target)) closeMsgMenu();
+      };
+      const onDocKeyDown = (e) => {
+        if (e.key === "Escape") closeMsgMenu();
+      };
+      const onWindowClose = () => closeMsgMenu();
+
+      document.addEventListener("click", onDocClick, true);
+      document.addEventListener("keydown", onDocKeyDown, true);
+      window.addEventListener("resize", onWindowClose, true);
+      elMessages.addEventListener("scroll", onWindowClose, true);
+
+      activeMsgMenu = { el: menu, onDocClick, onDocKeyDown, onWindowClose };
+    }
+
+    function setAuthUi(loggedIn) {
+      elApp.style.display = loggedIn ? "block" : "none";
+      document.body.classList.toggle("isLoggedOut", !loggedIn);
+      elUsername.disabled = loggedIn;
+      elPassword.disabled = loggedIn;
+      elBtnRegister.disabled = loggedIn;
+      elBtnLogin.disabled = loggedIn;
+      if (elBtnLogout) elBtnLogout.style.display = loggedIn ? "inline-flex" : "none";
+      elBtnCreateGroup.disabled = !loggedIn;
+      elBtnAddContact.disabled = !loggedIn;
+      elContactUsername.disabled = !loggedIn;
+
+      const canChat = loggedIn && !!activeChat;
+      elMessage.disabled = !canChat;
+      if (elAttachment) elAttachment.disabled = !canChat;
+      if (elAttachBtn) elAttachBtn.disabled = !canChat;
+      elSend.disabled = !canChat;
+      updateDeleteGroupButton();
+    }
+
+    function updateDeleteGroupButton() {
+      const canDeleteGroup = Boolean(
+        meId &&
+        activeChat?.type === "group" &&
+        Number(activeChat.createdBy) === Number(meId)
+      );
+      elBtnDeleteGroup.style.display = canDeleteGroup ? "inline-block" : "none";
+    }
+
+    function clearChatUi() {
+      closeMsgMenu();
+      closeGallery();
+      elMessages.innerHTML = "";
+      dmMsgDomById.clear();
+      messageAttachmentKeys.clear();
+      hideTypingHint();
+      hideGroupTypingHint();
+    }
+
+    function statusTextDM(m) {
+      return m.fromUserId === meId ? "✓" : "";
+    }
+
+    function addMessageDM(m) {
+      const wrap = document.createElement("div");
+      wrap.className = "msg" + (m.fromUserId === meId ? " me" : "");
+      if (m.id != null) {
+        wrap.dataset.msgid = String(m.id);
+        wrap.dataset.msgId = String(m.id);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+
+      const time = new Date(m.ts).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+
+      const who = document.createElement("span");
+      who.textContent = `${m.name} • ${time}`;
+      meta.appendChild(who);
+
+      if (m.editedAt || m.edited_at) {
+        const editedTag = document.createElement("span");
+        editedTag.className = "editedTag";
+        editedTag.textContent = "изменено";
+        meta.appendChild(editedTag);
+      }
+
+      const status = document.createElement("span");
+      status.className = "status";
+      status.innerHTML = `<span class="ticks">${statusTextDM(m)}</span>`;
+      meta.appendChild(status);
+
+      const isDeleted = !!(m.deletedAt || m.deleted_at);
+      if (!isDeleted) {
+        const replyBtn = document.createElement("button");
+        replyBtn.className = "msgReplyBtn";
+        replyBtn.type = "button";
+        replyBtn.textContent = "Ответить";
+        replyBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setPendingReplyFromMessage(m);
+        });
+        meta.appendChild(replyBtn);
+      }
+
+      if (canManageMessage(m)) {
+        const moreBtn = document.createElement("button");
+        moreBtn.className = "moreBtn";
+        moreBtn.type = "button";
+        moreBtn.setAttribute("aria-label", "Меню");
+        moreBtn.textContent = "⋯";
+        moreBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openMsgMenu({ btn: moreBtn, wrap, message: m, mode: "dm" });
+        });
+        meta.appendChild(moreBtn);
+      }
+
+      const body = document.createElement("div");
+      body.className = "text";
+      if (isDeleted) {
+        body.textContent = "Сообщение удалено";
+        body.classList.add("isDeleted");
+        wrap.classList.add("isDeletedBubble");
+      } else {
+        body.textContent = m.text;
+      }
+
+      wrap.appendChild(meta);
+      const replyPreview = buildReplyPreview(m, { chatKind: "dm", peerId: activeChat?.userId });
+      if (replyPreview) wrap.appendChild(replyPreview);
+      wrap.appendChild(body);
+
+      const attachmentItems = isDeleted ? [] : collectAttachmentItems(m.attachments);
+      const messageId = getAttachmentGroupId(m);
+      if (attachmentItems.length) {
+        messageAttachmentKeys.set(messageId, attachmentItems.map((a) => a.key));
+
+        const attachWrap = document.createElement("div");
+        attachWrap.className = "attachList";
+
+        const summary = document.createElement("span");
+        summary.className = "attBadge";
+        summary.dataset.attachKey = attachmentItems[0].key;
+        summary.dataset.attachMsgid = messageId;
+        summary.dataset.attachType = attachmentItems[0].type || "";
+        summary.title = `Вложений: ${attachmentItems.length}`;
+        summary.textContent = `📎 ${attachmentItems.length}`;
+        attachWrap.appendChild(summary);
+        wrap.appendChild(attachWrap);
+      } else {
+        messageAttachmentKeys.delete(messageId);
+      }
+
+      elMessages.appendChild(wrap);
+      elMessages.scrollTop = elMessages.scrollHeight;
+
+      if (m.id != null) dmMsgDomById.set(Number(m.id), status);
+    }
+
+    function addMessageGroup(m) {
+      const wrap = document.createElement("div");
+      wrap.className = "msg" + (m.fromUserId === meId ? " me" : "");
+      if (m.id != null) {
+        wrap.dataset.msgid = String(m.id);
+        wrap.dataset.msgId = String(m.id);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+
+      const time = new Date(m.ts).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+      const who = document.createElement("span");
+      who.textContent = `${m.name} • ${time}`;
+      meta.appendChild(who);
+      if (m.editedAt || m.edited_at) {
+        const editedTag = document.createElement("span");
+        editedTag.className = "editedTag";
+        editedTag.textContent = "изменено";
+        meta.appendChild(editedTag);
+      }
+      if (canManageMessage(m)) {
+        const moreBtn = document.createElement("button");
+        moreBtn.className = "moreBtn";
+        moreBtn.type = "button";
+        moreBtn.setAttribute("aria-label", "Меню");
+        moreBtn.textContent = "⋯";
+        moreBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openMsgMenu({ btn: moreBtn, wrap, message: m, mode: "group" });
+        });
+        meta.appendChild(moreBtn);
+      }
+
+      const isDeleted = !!(m.deletedAt || m.deleted_at);
+      if (!isDeleted) {
+        const replyBtn = document.createElement("button");
+        replyBtn.className = "msgReplyBtn";
+        replyBtn.type = "button";
+        replyBtn.textContent = "Ответить";
+        replyBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setPendingReplyFromMessage(m);
+        });
+        meta.appendChild(replyBtn);
+      }
+
+      const body = document.createElement("div");
+      body.className = "text";
+      if (isDeleted) {
+        body.textContent = "Сообщение удалено";
+        body.classList.add("isDeleted");
+        wrap.classList.add("isDeletedBubble");
+      } else {
+        body.textContent = m.text;
+      }
+
+      wrap.appendChild(meta);
+      const replyPreview = buildReplyPreview(m, { chatKind: "group", groupId: activeChat?.groupId });
+      if (replyPreview) wrap.appendChild(replyPreview);
+      wrap.appendChild(body);
+
+      const attachmentItems = isDeleted ? [] : collectAttachmentItems(m.attachments);
+      const messageId = getAttachmentGroupId(m);
+      if (attachmentItems.length) {
+        messageAttachmentKeys.set(messageId, attachmentItems.map((a) => a.key));
+
+        const attachWrap = document.createElement("div");
+        attachWrap.className = "attachList";
+
+        const summary = document.createElement("span");
+        summary.className = "attBadge";
+        summary.dataset.attachKey = attachmentItems[0].key;
+        summary.dataset.attachMsgid = messageId;
+        summary.dataset.attachType = attachmentItems[0].type || "";
+        summary.title = `Вложений: ${attachmentItems.length}`;
+        summary.textContent = `📎 ${attachmentItems.length}`;
+        attachWrap.appendChild(summary);
+        wrap.appendChild(attachWrap);
+      } else {
+        messageAttachmentKeys.delete(messageId);
+      }
+
+      elMessages.appendChild(wrap);
+      elMessages.scrollTop = elMessages.scrollHeight;
+    }
+
+    function rerenderActiveChat() {
+      clearChatUi();
+      if (!activeChat) return;
+
+      if (activeChat.type === "dm") {
+        const peerId = Number(activeChat.userId);
+        (dmHistory[peerId] || []).forEach(addMessageDM);
+      } else {
+        const gid = Number(activeChat.groupId);
+        (groupHistory[gid] || []).forEach(addMessageGroup);
+      }
+    }
+
+    async function setActiveDM(user) {
+      resetTypingState();
+      const nextUserId = Number(user.userId);
+      const shouldResetPending = !activeChat || activeChat.type !== "dm" || Number(activeChat.userId) !== nextUserId;
+      if (shouldResetPending) clearPendingFiles();
+      if (shouldResetPending) clearPendingReply();
+
+      activeChat = { type:"dm", ...user, userId: nextUserId };
+      resetUnreadKey(getActiveKey());
+      elChatTitle.textContent = `Чат с: ${user.username}`;
+      setAuthUi(!!me);
+
+      rerenderActiveChat();
+      await loadDmHistoryFromDb(activeChat.userId);
+      rerenderActiveChat();
+
+      if (socket && activeChat.userId) {
+        socket.emit("chat:read", { peerUserId: activeChat.userId });
+      }
+    }
+
+    async function setActiveGroup(group) {
+      resetTypingState();
+      const gid = Number(group.id);
+      const shouldResetPending = !activeChat || activeChat.type !== "group" || Number(activeChat.groupId) !== gid;
+      if (shouldResetPending) clearPendingFiles();
+      if (shouldResetPending) clearPendingReply();
+
+      activeChat = {
+        type:"group",
+        groupId: gid,
+        title: group.title,
+        createdBy: Number(group.created_by),
+      };
+      resetUnreadKey(getActiveKey());
+      elChatTitle.textContent = `Группа: ${group.title}`;
+      setAuthUi(!!me);
+
+      rerenderActiveChat();
+      await loadGroupHistoryFromDb(gid);
+      rerenderActiveChat();
+    }
+
+    function updateDmStatus(messageId, deliveredAt, readAt) {
+      const statusEl = dmMsgDomById.get(Number(messageId));
+      if (!statusEl) return;
+
+      for (const peerId in dmHistory) {
+        const arr = dmHistory[peerId] || [];
+        const m = arr.find(x => x.id === Number(messageId));
+        if (m) {
+          if (deliveredAt != null) m.deliveredAt = deliveredAt;
+          if (readAt != null) m.readAt = readAt;
+          statusEl.innerHTML = `<span class="ticks">${statusTextDM(m)}</span>`;
+          return;
+        }
+      }
+    }
+
+    function findMsgWrapById(id) {
+      return elMessages.querySelector(`[data-msg-id="${Number(id)}"]`) || elMessages.querySelector(`[data-msgid="${Number(id)}"]`);
+    }
+
+    function getContactById(userId) {
+      const uid = Number(userId);
+      return (contactsCache || []).find((c) => Number(c.id) === uid)
+        || (window._contacts || []).find((c) => Number(c.id) === uid)
+        || null;
+    }
+
+    function getGroupById(groupId) {
+      const gid = Number(groupId);
+      return (groupsCache || []).find((g) => Number(g.id) === gid) || null;
+    }
+
+    function highlightMessage(el) {
+      if (!el) return;
+      if (jumpHighlightTimer) {
+        clearTimeout(jumpHighlightTimer);
+        jumpHighlightTimer = null;
+      }
+      el.classList.add("jumpHighlight");
+      jumpHighlightTimer = setTimeout(() => {
+        el.classList.remove("jumpHighlight");
+        jumpHighlightTimer = null;
+      }, 2000);
+    }
+
+    async function jumpToReplyMessage(target) {
+      if (!target) return;
+
+      const parentId = Number(target.dataset.replyJump);
+      if (!Number.isFinite(parentId)) return;
+
+      const chatKind = target.dataset.chatKind;
+      const peerId = Number(target.dataset.peerId);
+      const groupId = Number(target.dataset.groupId);
+
+      if (chatKind === "group" && Number.isFinite(groupId) && (activeChat?.type !== "group" || Number(activeChat.groupId) !== groupId)) {
+        const group = getGroupById(groupId);
+        await setActiveGroup(group ? { ...group, id: Number(group.id), created_by: group.created_by } : { id: groupId, title: `Группа ${groupId}`, created_by: null });
+      } else if (chatKind === "dm" && Number.isFinite(peerId) && (activeChat?.type !== "dm" || Number(activeChat.userId) !== peerId)) {
+        const contact = getContactById(peerId);
+        await setActiveDM({ userId: peerId, username: contact?.username || `Пользователь ${peerId}` });
+      }
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const el = document.querySelector(`[data-msg-id="${parentId}"]`) || document.querySelector(`[data-msgid="${parentId}"]`);
+          if (!el) {
+            alert("Сообщение не загружено в текущей истории");
+            return;
+          }
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          highlightMessage(el);
+        }, 0);
+      });
+    }
+
+    function applyMsgDomUpdate(id, { text, isDeleted, isEdited }) {
+      const wrap = findMsgWrapById(id);
+      if (!wrap) return;
+
+      const body = wrap.querySelector(".text");
+      if (!body) return;
+
+      if (isDeleted) {
+        closeInlineEdit(wrap);
+        closeMsgMenu();
+        body.textContent = "Сообщение удалено";
+        body.classList.add("isDeleted");
+        wrap.classList.add("isDeletedBubble");
+        const moreBtn = wrap.querySelector(".moreBtn");
+        if (moreBtn) moreBtn.remove();
+        const replyBtn = wrap.querySelector(".msgReplyBtn");
+        if (replyBtn) replyBtn.remove();
+        const attachWrap = wrap.querySelector(".attachList");
+        if (attachWrap) attachWrap.remove();
+        const msgId = wrap.dataset.msgid != null ? `msg:${Number(wrap.dataset.msgid)}` : null;
+        if (msgId) messageAttachmentKeys.delete(msgId);
+        wrap.querySelectorAll("[data-attach-key]").forEach((el) => {
+          el.removeAttribute("data-attach-key");
+          el.removeAttribute("data-attach-msgid");
+          el.removeAttribute("data-attach-type");
+        });
+      } else if (text != null) {
+        body.textContent = text;
+        body.classList.remove("isDeleted");
+        wrap.classList.remove("isDeletedBubble");
+      }
+
+      if (isEdited) {
+        const meta = wrap.querySelector(".meta");
+        if (!meta) return;
+        let editedTag = meta.querySelector(".editedTag");
+        if (!editedTag) {
+          editedTag = document.createElement("span");
+          editedTag.className = "editedTag";
+          editedTag.textContent = "изменено";
+          const statusNode = meta.querySelector(".status");
+          if (statusNode) meta.insertBefore(editedTag, statusNode);
+          else meta.appendChild(editedTag);
+        }
+      }
+    }
+
+function formatLastSeen(lastSeenAt) {
+  if (!lastSeenAt) return "offline";
+
+  const t = new Date(lastSeenAt).getTime();
+  if (!Number.isFinite(t)) return "offline";
+
+  const diffMs = Date.now() - t;
+  const mins = Math.floor(diffMs / 60000);
+
+  if (mins < 1) return "был(а) только что";
+  if (mins === 1) return "был(а) 1 минуту назад";
+  if (mins < 5) return `был(а) ${mins} минуты назад`;
+  if (mins < 60) return `был(а) ${mins} минут назад`;
+
+  const hours = Math.floor(mins / 60);
+  if (hours === 1) return "был(а) 1 час назад";
+  if (hours < 5) return `был(а) ${hours} часа назад`;
+  return `был(а) ${hours} часов назад`;
+}
+    function renderGroups(groups) {
+      groupsCache = Array.isArray(groups) ? groups.slice() : [];
+      elGroupsList.innerHTML = "";
+
+      if (!groups || !groups.length) {
+        const empty = document.createElement("div");
+        empty.className = "sidebar-empty";
+        empty.textContent = "Пока нет групп";
+        elGroupsList.appendChild(empty);
+        return;
+      }
+
+      groups.forEach(g => {
+        const gid = Number(g.id);
+
+        const row = document.createElement("div");
+        row.className = "user" + (activeChat?.type === "group" && Number(activeChat.groupId) === gid ? " active" : "");
+        row.dataset.chatKey = keyForGroup(gid);
+
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "group-title";
+        nameDiv.textContent = g.title;
+
+        row.appendChild(nameDiv);
+        const unreadBadge = document.createElement("span");
+        unreadBadge.className = "badge";
+        unreadBadge.style.display = "none";
+        row.appendChild(unreadBadge);
+        renderUnreadBadge(row, unreadByKey.get(row.dataset.chatKey) || 0);
+
+        row.addEventListener("click", () => setActiveGroup({ ...g, id: gid, created_by: g.created_by }));
+        elGroupsList.appendChild(row);
+      });
+    }
+
+    function renderContacts(contacts) {
+      window._contacts = (contacts || []).map(contact => ({
+        id: Number(contact.id),
+        username: contact.username,
+      }));
+      elContactsList.innerHTML = "";
+
+      if (!contacts || !contacts.length) {
+        const empty = document.createElement("div");
+        empty.className = "sidebar-empty";
+        empty.textContent = "Пока нет контактов";
+        elContactsList.appendChild(empty);
+        return;
+      }
+
+      contacts.forEach(contact => {
+        const uid = Number(contact.id);
+
+        const row = document.createElement("div");
+        row.className = "user" + (activeChat?.type === "dm" && Number(activeChat.userId) === uid ? " active" : "");
+        row.dataset.chatKey = keyForPeer(uid);
+
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "chat-title";
+        nameDiv.textContent = contact.username;
+
+        const badge = document.createElement("div");
+        badge.className = "sideStatus";
+        const st = usersStatusCache.get(uid);
+        if (st?.online) {
+          badge.textContent = "online";
+        } else if (st) {
+          badge.textContent = formatLastSeen(st?.lastSeenAt);
+        } else {
+          badge.textContent = "offline";
+        }
+
+        row.appendChild(nameDiv);
+        row.appendChild(badge);
+        const unreadBadge = document.createElement("span");
+        unreadBadge.className = "badge";
+        unreadBadge.style.display = "none";
+        row.appendChild(unreadBadge);
+        renderUnreadBadge(row, unreadByKey.get(row.dataset.chatKey) || 0);
+
+        row.addEventListener("click", () => setActiveDM({ userId: uid, username: contact.username }));
+        elContactsList.appendChild(row);
+      });
+    }
+
+    function getContactsForGroupModal() {
+      if (Array.isArray(contactsCache) && contactsCache.length) return contactsCache;
+      if (Array.isArray(window._contacts) && window._contacts.length) return window._contacts;
+      return [];
+    }
+
+    function renderSelectedParticipantsChips() {
+      elGroupSelectedChips.innerHTML = "";
+      const contacts = getContactsForGroupModal();
+
+      selectedParticipants.forEach((username) => {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+
+        const text = document.createElement("span");
+        text.textContent = username;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "chipRemove";
+        removeBtn.type = "button";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", () => {
+          selectedParticipants.delete(username);
+          renderSelectedParticipantsChips();
+          renderGroupModalContactsList(contacts);
+        });
+
+        chip.appendChild(text);
+        chip.appendChild(removeBtn);
+        elGroupSelectedChips.appendChild(chip);
+      });
+    }
+
+    function renderGroupModalContactsList(contacts) {
+      elGroupContactsList.innerHTML = "";
+
+      if (!contacts.length) {
+        const empty = document.createElement("div");
+        empty.className = "sidebar-empty";
+        empty.textContent = "Нет контактов для добавления";
+        elGroupContactsList.appendChild(empty);
+        return;
+      }
+
+      contacts.forEach((contact) => {
+        const username = contact.username;
+        const row = document.createElement("div");
+        row.className = "modalContactRow";
+
+        const name = document.createElement("div");
+        name.className = "contactName";
+        name.textContent = username;
+
+        const addBtn = document.createElement("button");
+        addBtn.className = "iconAction contactAddBtn";
+        addBtn.type = "button";
+        addBtn.textContent = "+";
+        addBtn.disabled = selectedParticipants.has(username);
+        addBtn.addEventListener("click", () => {
+          const myUsername = (me || localStorage.getItem("me") || localStorage.getItem("username") || "").toLowerCase();
+          const u = (contact.username || "").toLowerCase();
+          if (myUsername && u && myUsername === u) return;
+          if (selectedParticipants.has(username)) return;
+          selectedParticipants.add(username);
+          elGroupParticipantsError.textContent = "";
+          renderSelectedParticipantsChips();
+          renderGroupModalContactsList(contacts);
+        });
+
+        row.appendChild(name);
+        row.appendChild(addBtn);
+        elGroupContactsList.appendChild(row);
+      });
+    }
+
+    function resetCreateGroupModalState() {
+      selectedParticipants.clear();
+      elGroupModalName.value = "";
+      elGroupModalName.classList.remove("errorInput");
+      elGroupParticipantsError.textContent = "";
+      renderSelectedParticipantsChips();
+      renderGroupModalContactsList(getContactsForGroupModal());
+    }
+
+    function openCreateGroupModal() {
+      resetCreateGroupModalState();
+      elCreateGroupModal.classList.add("isOpen");
+      elCreateGroupModal.setAttribute("aria-hidden", "false");
+      elGroupModalName.focus();
+    }
+
+    function closeCreateGroupModal() {
+      elCreateGroupModal.classList.remove("isOpen");
+      elCreateGroupModal.setAttribute("aria-hidden", "true");
+    }
+
+    async function createGroup(title, membersUsernames) {
+      await apiPost("/api/groups", { title, membersUsernames });
+      const groups = await loadGroups().catch(() => []);
+      renderGroups(groups);
+    }
+
+    async function deleteActiveGroup() {
+      if (!token || activeChat?.type !== "group" || !activeChat.groupId) return;
+
+      try {
+        const res = await fetch(`/api/groups/${Number(activeChat.groupId)}`, {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token },
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+
+        activeChat = null;
+        clearChatUi();
+        elChatTitle.textContent = "Выбери группу или пользователя слева";
+        setAuthUi(!!me);
+
+        const groups = await loadGroups().catch(() => []);
+        renderGroups(groups);
+      } catch (e) {
+        alert("Ошибка удаления группы: " + e.message);
+      }
+    }
+
+    async function apiPost(url, data) {
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = "Bearer " + token;
+
+      const res = await fetch(url, { method:"POST", headers, body: JSON.stringify(data) });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+      return json;
+    }
+
+    async function apiGet(url) {
+      const headers = {};
+      if (token) headers["Authorization"] = "Bearer " + token;
+
+      const res = await fetch(url, { headers });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+      return json;
+    }
+
+    function basename(key) {
+      const normalized = String(key || "").split("?")[0];
+      const parts = normalized.split("/").filter(Boolean);
+      return parts.length ? parts[parts.length - 1] : "file";
+    }
+
+    function normalizeAttachments(rawAttachments, fallbackKey, fallbackType) {
+      const normalized = Array.isArray(rawAttachments) ? rawAttachments : [];
+      if (normalized.length) return normalized;
+      if (!fallbackKey) return [];
+      return [{ key: fallbackKey, type: fallbackType ?? null, order: 0 }];
+    }
+
+    async function openAttachmentInNewTab(key) {
+      const url = await ensureUrl(key);
+      window.open(url, "_blank", "noopener");
+    }
+
+    async function apiPostNoBody(url) {
+      const headers = {};
+      if (token) headers["Authorization"] = "Bearer " + token;
+
+      const res = await fetch(url, { method:"POST", headers });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+      return json;
+    }
+
+    async function loadDmHistoryFromDb(peerUserId) {
+      if (!token || !peerUserId) return;
+
+      const r = await apiGet(`/api/messages?peerUserId=${peerUserId}&limit=50`);
+      dmHistory[peerUserId] = (r.messages || []).map(m => ({
+        id: Number(m.id),
+        fromUserId: Number(m.from_user_id),
+        toUserId: Number(m.to_user_id),
+        name: m.from_username,
+        text: m.text,
+        attachment_key: m.attachment_key ?? null,
+        attachment_type: m.attachment_type ?? null,
+        attachments: normalizeAttachments(m.attachments, m.attachment_key, m.attachment_type),
+        ts: new Date(m.created_at).getTime(),
+        createdAtMs: new Date(m.created_at).getTime(),
+        deliveredAt: m.delivered_at ? new Date(m.delivered_at).getTime() : null,
+        readAt: m.read_at ? new Date(m.read_at).getTime() : null,
+        editedAt: m.edited_at ? new Date(m.edited_at).getTime() : null,
+        deletedAt: m.deleted_at ? new Date(m.deleted_at).getTime() : null,
+        reply_to_message_id: m.reply_to_message_id ?? null,
+        reply_to: m.reply_to ?? null,
+      }));
+    }
+
+    async function loadGroups() {
+      if (!token) return [];
+      const r = await apiGet(`/api/groups`);
+      return r.groups || [];
+    }
+
+    async function loadContacts() {
+      if (!token) return [];
+      const r = await apiGet(`/api/contacts`);
+      return r.contacts || [];
+    }
+
+    async function loadIncomingRequests() {
+      return (await apiGet("/api/contacts/requests/incoming")).requests || [];
+    }
+
+    async function loadOutgoingRequests() {
+      return (await apiGet("/api/contacts/requests/outgoing")).requests || [];
+    }
+
+    function renderIncomingRequests(list) {
+      elIncomingRequestsList.innerHTML = "";
+
+      if (!list || !list.length) {
+        const empty = document.createElement("div");
+        empty.className = "sidebar-empty";
+        empty.textContent = "Заявок нет";
+        elIncomingRequestsList.appendChild(empty);
+        return;
+      }
+
+      list.forEach((req) => {
+        const fromUserId = Number(req.fromUserId ?? req.from_user_id ?? req.userId ?? req.id);
+        const username = req.fromUsername ?? req.from_username ?? req.username ?? `user ${fromUserId}`;
+
+        const row = document.createElement("div");
+        row.className = "user";
+
+        const nameDiv = document.createElement("div");
+        nameDiv.textContent = username;
+
+        const actions = document.createElement("div");
+        actions.style.display = "flex";
+        actions.style.gap = "6px";
+
+        const acceptBtn = document.createElement("button");
+        acceptBtn.className = "btnMini";
+        acceptBtn.textContent = "Принять";
+
+        const declineBtn = document.createElement("button");
+        declineBtn.className = "btnMini btnGhost";
+        declineBtn.textContent = "Отклонить";
+
+        const updateAfterAction = async () => {
+          const incoming = await loadIncomingRequests().catch(() => []);
+          renderIncomingRequests(incoming);
+
+          const outgoing = await loadOutgoingRequests().catch(() => []);
+          renderOutgoingRequests(outgoing);
+
+          const contacts = await loadContacts().catch(() => []);
+          contactsCache = contacts;
+          renderContacts(contactsCache);
+        };
+
+        acceptBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          try {
+            await apiPostNoBody(`/api/contacts/requests/${fromUserId}/accept`);
+            await updateAfterAction();
+          } catch (err) {
+            alert("Ошибка принятия заявки: " + err.message);
+          }
+        });
+
+        declineBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          try {
+            await apiPostNoBody(`/api/contacts/requests/${fromUserId}/decline`);
+            await updateAfterAction();
+          } catch (err) {
+            alert("Ошибка отклонения заявки: " + err.message);
+          }
+        });
+
+        actions.appendChild(acceptBtn);
+        actions.appendChild(declineBtn);
+
+        row.appendChild(nameDiv);
+        row.appendChild(actions);
+        elIncomingRequestsList.appendChild(row);
+      });
+    }
+
+    function renderOutgoingRequests(list) {
+      elOutgoingRequestsList.innerHTML = "";
+
+      if (!list || !list.length) {
+        const empty = document.createElement("div");
+        empty.className = "sidebar-empty";
+        empty.textContent = "Нет исходящих";
+        elOutgoingRequestsList.appendChild(empty);
+        return;
+      }
+
+      list.forEach((req) => {
+        const username = req.toUsername ?? req.to_username ?? req.username ?? "unknown";
+
+        const row = document.createElement("div");
+        row.className = "user";
+
+        const nameDiv = document.createElement("div");
+        nameDiv.textContent = username;
+
+        const badge = document.createElement("div");
+        badge.className = "sideStatus";
+        badge.textContent = "ожидает";
+
+        row.appendChild(nameDiv);
+        row.appendChild(badge);
+        elOutgoingRequestsList.appendChild(row);
+      });
+    }
+
+    async function loadGroupHistoryFromDb(groupId) {
+      if (!token || !groupId) return;
+
+      const r = await apiGet(`/api/groups/${groupId}/messages?limit=50`);
+      groupHistory[groupId] = (r.messages || []).map(m => ({
+        id: Number(m.id),
+        fromUserId: Number(m.from_user_id),
+        name: m.from_username,
+        text: m.text,
+        attachment_key: m.attachment_key ?? null,
+        attachment_type: m.attachment_type ?? null,
+        attachments: normalizeAttachments(m.attachments, m.attachment_key, m.attachment_type),
+        ts: new Date(m.created_at).getTime(),
+        createdAtMs: new Date(m.created_at).getTime(),
+        editedAt: m.edited_at ? new Date(m.edited_at).getTime() : null,
+        deletedAt: m.deleted_at ? new Date(m.deleted_at).getTime() : null,
+        reply_to_message_id: m.reply_to_message_id ?? null,
+        reply_to: m.reply_to ?? null,
+      }));
+    }
+
+function connectSocket() {
+  if (!token) return; // без токена не подключаемся
+
+  socket = io({
+    autoConnect: false,
+    auth: { token },
+  });
+
+  socket.connect();
+  window.socket = socket;
+
+  socket.on("connect_error", (err) => {
+    console.log("socket connect_error:", err.message);
+    elAuthStatus.textContent = "❌ Токен не подошёл. Войди заново.";
+    logout(true);
+  });
+
+  socket.on("connect", () => {
+    socket.emit("users:status:request");
+  });
+
+  socket.on("users:status", (users) => {
+    usersStatusCache.clear();
+    (users || []).forEach(u => usersStatusCache.set(Number(u.userId), u));
+    renderContacts(contactsCache);
+  });
+
+      socket.on("typing:start", ({ fromUserId }) => {
+        const uid = Number(fromUserId);
+        if (!uid || uid === Number(meId)) return;
+        if (activeChat?.type !== "dm" || Number(activeChat.userId) !== uid) return;
+
+        clearTypingPeerTimeout(uid);
+        showTypingHint(uid);
+
+        const timeoutId = setTimeout(() => {
+          clearTypingPeerTimeout(uid);
+          if (typingActivePeerUserId === uid) hideTypingHint();
+        }, 2500);
+        typingPeers.set(uid, timeoutId);
+      });
+
+      socket.on("typing:stop", ({ fromUserId }) => {
+        const uid = Number(fromUserId);
+        if (!uid) return;
+        clearTypingPeerTimeout(uid);
+        if (typingActivePeerUserId === uid) hideTypingHint();
+      });
+
+      socket.on("group:typing:start", ({ groupId, fromUserId, fromUsername }) => {
+        const gid = Number(groupId);
+        const uid = Number(fromUserId);
+        if (!gid || !uid) return;
+        if (uid === Number(meId)) return;
+        if (activeChat?.type !== "group" || Number(activeChat.groupId) !== gid) return;
+
+        clearGroupTypingTimeout(gid, uid);
+        showGroupTypingHint(uid, fromUsername);
+
+        const timeoutId = setTimeout(() => {
+          clearGroupTypingTimeout(gid, uid);
+          if (groupTypingActiveUserId === uid) hideGroupTypingHint();
+        }, 2500);
+        groupTyping.set(`${gid}:${uid}`, timeoutId);
+      });
+
+      socket.on("group:typing:stop", ({ groupId, fromUserId }) => {
+        const gid = Number(groupId);
+        const uid = Number(fromUserId);
+        if (!gid || !uid) return;
+        clearGroupTypingTimeout(gid, uid);
+        if (activeChat?.type !== "group" || Number(activeChat.groupId) !== gid) return;
+        if (groupTypingActiveUserId === uid) hideGroupTypingHint();
+      });
+
+      socket.on("chat:dm", (envelope) => {
+        const { id, fromUserId, toUserId, fromUsername, msg, createdAt, deliveredAt, readAt, reply_to_message_id } = envelope;
+        const rawAttachments = envelope.attachments || envelope.msg?.attachments || [];
+        const attachments = normalizeAttachments(rawAttachments, msg?.attachment_key, msg?.attachment_type);
+        const normalizedReplyToId = envelope.reply_to_message_id ?? reply_to_message_id ?? msg?.reply_to_message_id ?? msg?.replyToId ?? null;
+        const replyPreview = envelope.replyPreview || msg?.replyPreview || null;
+        const normalizedReplyTo = envelope.reply_to
+          ?? msg?.reply_to
+          ?? ((replyPreview && Number(replyPreview.id) === Number(normalizedReplyToId)) ? replyPreview : null);
+        const peerUserId = (Number(fromUserId) === meId) ? Number(toUserId) : Number(fromUserId);
+        const fallbackName = Number(fromUserId) === meId ? me : undefined;
+
+        const normalized = {
+          id: Number(id),
+          fromUserId: Number(fromUserId),
+          toUserId: Number(toUserId),
+          name: fromUsername ?? msg?.fromUsername ?? msg?.name ?? fallbackName,
+          text: msg.text,
+          attachment_key: msg?.attachment_key ?? null,
+          attachment_type: msg?.attachment_type ?? null,
+          attachments,
+          ts: msg.ts || (createdAt ? new Date(createdAt).getTime() : Date.now()),
+          createdAtMs: createdAt ? new Date(createdAt).getTime() : (msg.ts || Date.now()),
+          deliveredAt: deliveredAt ? new Date(deliveredAt).getTime() : null,
+          readAt: readAt ? new Date(readAt).getTime() : null,
+          reply_to_message_id: normalizedReplyToId,
+          reply_to: normalizedReplyTo,
+        };
+
+        dmHistory[peerUserId] = dmHistory[peerUserId] || [];
+        const idx = dmHistory[peerUserId].findIndex(x => x.id === normalized.id);
+        if (idx >= 0) dmHistory[peerUserId][idx] = { ...dmHistory[peerUserId][idx], ...normalized };
+        else dmHistory[peerUserId].push(normalized);
+
+        if (activeChat?.type === "dm" && Number(activeChat.userId) === peerUserId) {
+          if (dmMsgDomById.has(normalized.id)) updateDmStatus(normalized.id, normalized.deliveredAt, normalized.readAt);
+          else addMessageDM(normalized);
+
+          if (normalized.fromUserId !== meId) socket.emit("chat:read", { peerUserId });
+        }
+
+        if (normalized.fromUserId !== meId) {
+          const key = keyForPeer(peerUserId);
+          if (document.hidden || key !== getActiveKey()) {
+            incUnread(key);
+          }
+        }
+      });
+
+      socket.on("chat:read", (payload) => {
+        const { peerUserId, messageIds, readAt } = payload || {};
+        if (!Array.isArray(messageIds) || !messageIds.length) return;
+
+        const readerId = Number(peerUserId);
+        const readTs = readAt ? new Date(readAt).getTime() : Date.now();
+
+        const arr = dmHistory[readerId];
+        if (!arr) return;
+
+        const idSet = new Set(messageIds.map(Number));
+        for (const m of arr) {
+          if (m.fromUserId === meId && idSet.has(m.id)) {
+            m.readAt = readTs;
+            updateDmStatus(m.id, null, m.readAt);
+          }
+        }
+      });
+
+      socket.on("message:edited", (p) => {
+        const id = Number(p?.id);
+        if (!id) return;
+        for (const peerId in dmHistory) {
+          const arr = dmHistory[peerId] || [];
+          const m = arr.find(x => Number(x.id) === id);
+          if (m) {
+            if (typeof p.text === "string") m.text = p.text;
+            m.editedAt = p.edited_at || p.editedAt || Date.now();
+            if (activeChat?.type === "dm" && Number(activeChat.userId) === Number(peerId)) {
+              applyMsgDomUpdate(id, { text: m.text, isDeleted: !!m.deletedAt, isEdited: true });
+            }
+            break;
+          }
+        }
+      });
+
+      socket.on("message:deleted", (p) => {
+        const id = Number(p?.id);
+        if (!id) return;
+        for (const peerId in dmHistory) {
+          const arr = dmHistory[peerId] || [];
+          const m = arr.find(x => Number(x.id) === id);
+          if (m) {
+            m.deletedAt = p.deleted_at || p.deletedAt || Date.now();
+            m.deleted_at = m.deletedAt;
+            m.attachments = [];
+            m.attachment_key = null;
+            m.attachment_type = null;
+            if (activeChat?.type === "dm" && Number(activeChat.userId) === Number(peerId)) {
+              applyMsgDomUpdate(id, { isDeleted: true, isEdited: !!m.editedAt });
+            }
+            break;
+          }
+        }
+      });
+
+      socket.on("group:msg", (envelope) => {
+        const { id, groupId, fromUserId, fromUsername, text, createdAt, attachment_key, attachment_type, reply_to_message_id } = envelope;
+        const rawAttachments = envelope.attachments || envelope.msg?.attachments || [];
+        const attachments = normalizeAttachments(rawAttachments, attachment_key, attachment_type);
+        const normalizedReplyToId = envelope.reply_to_message_id ?? reply_to_message_id ?? envelope.msg?.reply_to_message_id ?? envelope.msg?.replyToId ?? null;
+        const replyPreview = envelope.replyPreview || envelope.msg?.replyPreview || null;
+        const normalizedReplyTo = envelope.reply_to
+          ?? envelope.msg?.reply_to
+          ?? ((replyPreview && Number(replyPreview.id) === Number(normalizedReplyToId)) ? replyPreview : null);
+        const gid = Number(groupId);
+
+        const normalized = {
+          id: Number(id),
+          fromUserId: Number(fromUserId),
+          name: fromUsername,
+          text,
+          attachment_key: attachment_key ?? null,
+          attachment_type: attachment_type ?? null,
+          attachments,
+          ts: createdAt ? new Date(createdAt).getTime() : Date.now(),
+          createdAtMs: createdAt ? new Date(createdAt).getTime() : Date.now(),
+          reply_to_message_id: normalizedReplyToId,
+          reply_to: normalizedReplyTo,
+        };
+
+        groupHistory[gid] = groupHistory[gid] || [];
+        groupHistory[gid].push(normalized);
+
+        if (activeChat?.type === "group" && Number(activeChat.groupId) === gid) {
+          addMessageGroup(normalized);
+        }
+
+        if (normalized.fromUserId !== meId) {
+          const key = keyForGroup(gid);
+          if (document.hidden || key !== getActiveKey()) {
+            incUnread(key);
+          }
+        }
+      });
+
+      socket.on("groupMessage:edited", (p) => {
+        const id = Number(p?.id);
+        const gid = Number(p?.groupId);
+        if (!id || !gid) return;
+        const arr = groupHistory[gid] || [];
+        const m = arr.find(x => Number(x.id) === id);
+        if (m) {
+          if (typeof p.text === "string") m.text = p.text;
+          m.editedAt = p.edited_at || p.editedAt || Date.now();
+        }
+        if (activeChat?.type === "group" && Number(activeChat.groupId) === gid) {
+          applyMsgDomUpdate(id, { text: p.text ?? m?.text, isDeleted: !!m?.deletedAt, isEdited: true });
+        }
+      });
+
+      socket.on("groupMessage:deleted", (p) => {
+        const id = Number(p?.id);
+        const gid = Number(p?.groupId);
+        if (!id || !gid) return;
+        const arr = groupHistory[gid] || [];
+        const m = arr.find(x => Number(x.id) === id);
+        if (m) {
+          m.deletedAt = p.deleted_at || p.deletedAt || Date.now();
+          m.deleted_at = m.deletedAt;
+          m.attachments = [];
+          m.attachment_key = null;
+          m.attachment_type = null;
+        }
+        if (activeChat?.type === "group" && Number(activeChat.groupId) === gid) {
+          applyMsgDomUpdate(id, { isDeleted: true, isEdited: !!m?.editedAt });
+        }
+      });
+
+      socket.on("groups:update", async () => {
+        const groups = await loadGroups().catch(() => []);
+        renderGroups(groups);
+
+        if (activeChat?.type === "group") {
+          const activeGroupExists = groups.some(g => Number(g.id) === Number(activeChat.groupId));
+          if (!activeGroupExists) {
+            activeChat = null;
+            clearChatUi();
+            elChatTitle.textContent = "Выбери группу или пользователя слева";
+            setAuthUi(!!me);
+          }
+        }
+      });
+
+      socket.on("chat:error", (payload) => {
+        console.warn("chat:error", payload);
+        if (payload?.error === "RATE_LIMIT") {
+          alert("Слишком часто. Подожди секунду.");
+        }
+      });
+
+      socket.on("group:error", (payload) => {
+        console.warn("group:error", payload);
+        if (payload?.error === "RATE_LIMIT") {
+          alert("Слишком часто. Подожди секунду.");
+        }
+      });
+
+      socket.on("contacts:update", async (payload) => {
+        try {
+          const contacts = await loadContacts().catch(() => []);
+          contactsCache = contacts;
+          renderContacts(contactsCache);
+
+          const incoming = await loadIncomingRequests().catch(() => []);
+          renderIncomingRequests(incoming);
+
+          const outgoing = await loadOutgoingRequests().catch(() => []);
+          renderOutgoingRequests(outgoing);
+        } catch (err) {
+          console.log("contacts:update handling failed:", err);
+        }
+      });
+    }
+
+    function disconnectSocket() {
+      resetTypingState();
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+        window.socket = null;
+      }
+      elGroupsList.innerHTML = "";
+      elContactsList.innerHTML = "";
+      elIncomingRequestsList.innerHTML = "";
+      elOutgoingRequestsList.innerHTML = "";
+      usersStatusCache.clear();
+      contactsCache = [];
+      unreadByKey.clear();
+      updateUnreadTitle();
+      activeChat = null;
+      typingPeers.forEach((timeoutId) => clearTimeout(timeoutId));
+      typingPeers.clear();
+      groupTyping.forEach((timeoutId) => clearTimeout(timeoutId));
+      groupTyping.clear();
+      hideGroupTypingHint();
+      elChatTitle.textContent = "Выбери группу или пользователя слева";
+      setAuthUi(false);
+      clearChatUi();
+    }
+
+    const MAX_MESSAGE_LEN = 2000;
+    const MAX_ATTACHMENTS = 4;
+    let pendingFiles = [];
+    let pendingFilesSelectedTotal = 0;
+    let pendingSendUiState = null;
+
+    function setSendStatus(text) {
+      if (!elSendStatus) return;
+      elSendStatus.textContent = text || "";
+    }
+
+    function setSendingUi(isSending, labelText) {
+      if (isSending) {
+        pendingSendUiState = {
+          sendDisabled: elSend ? elSend.disabled : true,
+          messageDisabled: elMessage ? elMessage.disabled : true,
+          attachmentDisabled: elAttachment ? elAttachment.disabled : true,
+          sendText: elSend ? elSend.textContent : "Отправить"
+        };
+
+        if (elSend) {
+          elSend.disabled = true;
+          elSend.textContent = pendingFiles.length ? "Загрузка…" : "Отправляю…";
+        }
+        if (elMessage) elMessage.disabled = true;
+        if (elAttachment) elAttachment.disabled = true;
+        if (elAttachBtn) elAttachBtn.disabled = true;
+      } else {
+        if (elSend) {
+          elSend.disabled = pendingSendUiState ? pendingSendUiState.sendDisabled : false;
+          elSend.textContent = pendingSendUiState ? pendingSendUiState.sendText : "Отправить";
+        }
+        if (elMessage) elMessage.disabled = pendingSendUiState ? pendingSendUiState.messageDisabled : false;
+        if (elAttachment) elAttachment.disabled = pendingSendUiState ? pendingSendUiState.attachmentDisabled : false;
+        if (elAttachBtn) elAttachBtn.disabled = pendingSendUiState ? pendingSendUiState.attachmentDisabled : false;
+        pendingSendUiState = null;
+      }
+
+      setSendStatus(labelText);
+    }
+
+    function getFilesWord(n) {
+      const mod10 = n % 10;
+      const mod100 = n % 100;
+      if (mod10 === 1 && mod100 !== 11) return "файл";
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "файла";
+      return "файлов";
+    }
+
+    function renderAttachHint() {
+      if (!elAttachHint) return;
+      if (!pendingFiles.length) {
+        elAttachHint.textContent = "";
+        return;
+      }
+
+      const names = pendingFiles.map((f) => f.name);
+      const visibleNames = names.slice(0, 3).join(", ");
+      const restCount = names.length - 3;
+      const suffix = restCount > 0 ? ` и ещё ${restCount}` : "";
+      const countPart = pendingFilesSelectedTotal > pendingFiles.length
+        ? `${pendingFiles.length} ${getFilesWord(pendingFiles.length)} (из ${pendingFilesSelectedTotal})`
+        : `${pendingFiles.length} ${getFilesWord(pendingFiles.length)}`;
+
+      elAttachHint.textContent = `Выбрано: ${countPart} — ${visibleNames}${suffix}`;
+    }
+
+    function clearPendingFiles() {
+      pendingFiles = [];
+      pendingFilesSelectedTotal = 0;
+      if (elAttachment) elAttachment.value = "";
+      if (elAttachHint) elAttachHint.textContent = "";
+    }
+
+    function normalizeMessageText(v) {
+      const s = (v ?? "").toString().replace(/\r\n/g, "\n");
+      const trimmed = s.trim();
+      if (!trimmed) return { ok: false, value: "", reason: "empty" };
+      if (trimmed.length > MAX_MESSAGE_LEN) return { ok: false, value: trimmed.slice(0, MAX_MESSAGE_LEN), reason: "too_long" };
+      return { ok: true, value: trimmed, reason: null };
+    }
+
+    async function uploadAttachments(files, onFileStart) {
+      const attachments = [];
+
+      try {
+        for (let i = 0; i < files.length; i += 1) {
+          const file = files[i];
+          if (typeof onFileStart === "function") onFileStart(i);
+
+          const presignResponse = await apiPost("/api/uploads/presign", {
+            kind: "image",
+            contentType: file.type
+          });
+
+          const uploadRes = await fetch(presignResponse.uploadUrl, {
+            method: "PUT",
+            headers: { "Content-Type": file.type || "application/octet-stream" },
+            body: file
+          });
+
+          if (!uploadRes.ok) {
+            throw new Error("Не удалось загрузить изображение");
+          }
+
+          attachments.push({ key: presignResponse.key, type: "image" });
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Не удалось загрузить изображение");
+        throw e;
+      }
+
+      return attachments;
+    }
+
+    async function sendMessage() {
+      if (!socket || !activeChat) return;
+      let hasSendError = false;
+
+      try {
+        const hasFiles = pendingFiles.length > 0;
+        setSendingUi(true, hasFiles ? `Загрузка 0/${pendingFiles.length}…` : "Отправляю…");
+
+        const normalized = normalizeMessageText(elMessage.value);
+        if (!normalized.ok) {
+          if (normalized.reason === "empty") {
+            if (!hasFiles) return;
+          }
+          if (normalized.reason === "too_long") {
+            alert("Слишком длинное сообщение. Максимум 2000 символов.");
+            return;
+          }
+        }
+
+        const text = normalized.reason === "empty" ? "" : normalized.value;
+
+        let attachments = [];
+        if (hasFiles) {
+          attachments = await uploadAttachments(pendingFiles, (i) => {
+            setSendStatus(`Загрузка ${i + 1}/${pendingFiles.length}…`);
+          });
+        }
+        console.log("sent attachments:", attachments.length, attachments);
+        const replyToId = pendingReply?.id || null;
+        const replyPreview = buildPendingReplyPreview();
+
+        if (activeChat.type === "dm") {
+          if (hasFiles) {
+            socket.emit("chat:dm", {
+              toUserId: Number(activeChat.userId),
+              replyToId,
+              replyPreview,
+              msg: {
+                fromUsername: me,
+                text,
+                attachments
+              }
+            });
+          } else {
+            socket.emit("chat:dm", {
+              toUserId: Number(activeChat.userId),
+              replyToId,
+              replyPreview,
+              msg: { fromUsername: me, name: me, text, ts: Date.now() }
+            });
+          }
+        } else {
+          if (hasFiles) {
+            socket.emit("group:msg", {
+              groupId: Number(activeChat.groupId),
+              replyToId,
+              replyPreview,
+              msg: {
+                fromUsername: me,
+                text,
+                attachments
+              }
+            });
+          } else {
+            socket.emit("group:msg", {
+              groupId: Number(activeChat.groupId),
+              replyToId,
+              replyPreview,
+              msg: { fromUsername: me, text, ts: Date.now() }
+            });
+          }
+        }
+
+        resetTypingState();
+        setSendStatus("Отправлено");
+        setTimeout(() => setSendStatus(""), 700);
+        clearPendingFiles();
+        elMessage.value = "";
+        elMessage.focus();
+      } catch (e) {
+        hasSendError = true;
+        console.error("sendMessage failed", e);
+        alert("Не удалось отправить сообщение");
+        setSendStatus("Ошибка отправки");
+      } finally {
+        clearPendingReply();
+        setSendingUi(false, "");
+        if (hasSendError) {
+          setSendStatus("Ошибка отправки");
+          setTimeout(() => setSendStatus(""), 1500);
+        }
+      }
+    }
+
+    if (elAttachment) {
+      elAttachment.onchange = () => {
+        pendingFiles = Array.from(elAttachment.files || []);
+        pendingFilesSelectedTotal = pendingFiles.length;
+        if (pendingFiles.length > MAX_ATTACHMENTS) {
+          alert("Можно загрузить максимум 4 изображения. Будут отправлены первые 4.");
+          pendingFiles = pendingFiles.slice(0, MAX_ATTACHMENTS);
+        }
+        elAttachment.value = "";
+        renderAttachHint();
+      };
+    }
+
+    if (elAttachBtn && elAttachment) {
+      elAttachBtn.addEventListener("click", () => {
+        if (!elAttachBtn.disabled && !elAttachment.disabled) elAttachment.click();
+      });
+    }
+
+    if (elReplyCancel) {
+      elReplyCancel.addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearPendingReply();
+      });
+    }
+
+    elSend.addEventListener("click", sendMessage);
+
+    elMessages.addEventListener("click", async (e) => {
+      const replyJumpTarget = e.target.closest("[data-reply-jump]");
+      if (replyJumpTarget) {
+        e.preventDefault();
+        await jumpToReplyMessage(replyJumpTarget);
+        return;
+      }
+
+      const openBtn = e.target.closest("[data-attach-key]");
+      if (!openBtn) return;
+      e.preventDefault();
+
+      const key = openBtn.dataset.attachKey;
+      const messageId = openBtn.dataset.attachMsgid;
+      const type = (openBtn.dataset.attachType || "").toLowerCase();
+      if (!key || !messageId) return;
+
+      const keys = messageAttachmentKeys.get(messageId) || [];
+      const idx = keys.indexOf(key);
+      const isImage = !type || type.startsWith("image");
+
+      try {
+        if (isImage && idx >= 0) {
+          openGallery(keys, idx);
+        } else {
+          await openAttachmentInNewTab(key);
+        }
+      } catch (err) {
+        console.error(err);
+        if (isImage && idx >= 0) {
+          openGallery(keys, idx);
+        } else {
+          alert("Не удалось открыть файл");
+        }
+      }
+    });
+    elMessage.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+    elMessage.addEventListener("input", handleTypingInput);
+    elMessage.addEventListener("blur", () => {
+      resetTypingState();
+    });
+
+    async function doRegister() {
+      try {
+        elAuthStatus.textContent = "Регистрирую...";
+        const username = elUsername.value.trim();
+        const password = elPassword.value;
+
+        const r = await apiPost("/api/register", { username, password });
+        elAuthStatus.textContent = `✅ Registered: ${r.user.username}`;
+      } catch (e) {
+        elAuthStatus.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    async function doLogin() {
+      try {
+        elAuthStatus.textContent = "Вхожу...";
+        const username = elUsername.value.trim();
+        const password = elPassword.value;
+
+        const r = await apiPost("/api/login", { username, password });
+
+        me = r.user.username;
+        meId = Number(r.user.id);
+        token = r.token;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("me", me);
+        localStorage.setItem("meId", String(meId));
+
+        elAuthStatus.textContent = `✅ Logged in: ${me}`;
+
+        setAuthUi(true);
+        resetUnread();
+        connectSocket();
+
+        const groups = await loadGroups().catch(() => []);
+        renderGroups(groups);
+        const contacts = await loadContacts().catch(() => []);
+        contactsCache = contacts;
+        renderContacts(contactsCache);
+        const incoming = await loadIncomingRequests().catch(() => []);
+        renderIncomingRequests(incoming);
+        const outgoing = await loadOutgoingRequests().catch(() => []);
+        renderOutgoingRequests(outgoing);
+      } catch (e) {
+        elAuthStatus.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    function logout(silent = false) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("me");
+      localStorage.removeItem("meId");
+
+      token = null;
+      me = null;
+      meId = null;
+
+      if (!silent) {
+        elAuthStatus.textContent = "Вышел";
+        elUsername.value = "";
+        elPassword.value = "";
+      }
+
+      try { if (typeof resetUnread === "function") resetUnread(); } catch(e) {}
+      try { if (typeof unreadByKey !== "undefined") unreadByKey.clear(); } catch(e) {}
+      updateUnreadTitle();
+
+      try {
+        if (window.socket && typeof window.socket.disconnect === "function") window.socket.disconnect();
+      } catch(e) {}
+      disconnectSocket();
+
+      clearChatUi();
+      elGroupsList.innerHTML = "";
+      elContactsList.innerHTML = "";
+      elIncomingRequestsList.innerHTML = "";
+      elOutgoingRequestsList.innerHTML = "";
+      activeChat = null;
+      elChatTitle.textContent = "Выбери группу или пользователя слева";
+      setAuthUi(false);
+
+      elUsername.disabled = false;
+      elPassword.disabled = false;
+      elBtnRegister.disabled = false;
+      elBtnLogin.disabled = false;
+      elBtnCreateGroup.disabled = true;
+      elBtnAddContact.disabled = true;
+      elContactUsername.disabled = true;
+    }
+
+    elBtnRegister.addEventListener("click", doRegister);
+    elBtnLogin.addEventListener("click", doLogin);
+    if (elBtnLogout) elBtnLogout.addEventListener("click", logout);
+
+    elBtnCreateGroup.addEventListener("click", () => {
+      openCreateGroupModal();
+    });
+
+    elBtnCancelCreateGroup.addEventListener("click", () => {
+      closeCreateGroupModal();
+    });
+
+    elCreateGroupModal.addEventListener("click", (event) => {
+      if (event.target === elCreateGroupModal) closeCreateGroupModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && elCreateGroupModal.classList.contains("isOpen")) {
+        closeCreateGroupModal();
+      }
+    });
+
+    elBtnConfirmCreateGroup.addEventListener("click", async () => {
+      try {
+        const groupName = elGroupModalName.value.trim();
+        const selectedUsernames = Array.from(selectedParticipants);
+        const membersCsv = selectedUsernames.join(",");
+
+        elGroupModalName.classList.remove("errorInput");
+        elGroupParticipantsError.textContent = "";
+
+        if (!groupName) {
+          elGroupModalName.classList.add("errorInput");
+          return;
+        }
+
+        if (!selectedUsernames.length) {
+          elGroupParticipantsError.textContent = "Выберите хотя бы одного участника";
+          return;
+        }
+
+        const membersUsernames = membersCsv
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean);
+
+        await createGroup(groupName, membersUsernames);
+        closeCreateGroupModal();
+      } catch (e) {
+        alert("Ошибка создания группы: " + e.message);
+      }
+    });
+
+    elBtnDeleteGroup.addEventListener("click", deleteActiveGroup);
+
+    elBtnAddContact.addEventListener("click", async () => {
+      try {
+        const username = elContactUsername.value.trim();
+        if (!username) return;
+
+        await apiPost("/api/contacts/request", { username });
+        elContactUsername.value = "";
+        alert("Заявка отправлена");
+
+        const outgoing = await loadOutgoingRequests().catch(() => []);
+        renderOutgoingRequests(outgoing);
+      } catch (e) {
+        alert("Ошибка отправки заявки: " + e.message);
+      }
+    });
+
+    (async function restoreSession() {
+      const t = localStorage.getItem("token");
+      const savedMe = localStorage.getItem("me");
+      const savedMeId = localStorage.getItem("meId");
+
+      if (!t || !savedMe || !savedMeId) {
+        setAuthUi(false);
+        return;
+      }
+
+      token = t;
+      me = savedMe;
+      meId = Number(savedMeId);
+
+      try {
+        await apiGet("/api/users");
+        elAuthStatus.textContent = `✅ Logged in: ${me} (restore)`;
+        setAuthUi(true);
+        resetUnread();
+        connectSocket();
+
+        const groups = await loadGroups().catch(() => []);
+        renderGroups(groups);
+        const contacts = await loadContacts().catch(() => []);
+        contactsCache = contacts;
+        renderContacts(contactsCache);
+        const incoming = await loadIncomingRequests().catch(() => []);
+        renderIncomingRequests(incoming);
+        const outgoing = await loadOutgoingRequests().catch(() => []);
+        renderOutgoingRequests(outgoing);
+      } catch (e) {
+        console.log("restoreSession failed:", e.message);
+        elAuthStatus.textContent = "Сессия истекла. Войди заново.";
+        logout(true);
+      }
+    })();
+  </script>
 </body>
-
 </html>
