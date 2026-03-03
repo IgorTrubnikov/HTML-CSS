@@ -147,6 +147,18 @@
       box-shadow: 0 18px 40px rgba(60,110,255,.45);
     }
     .btnGhost { background: rgba(255,255,255,.35); }
+    .btnSecondary {
+      height: auto;
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin: 8px auto 10px;
+      display: block;
+      background: color-mix(in srgb, var(--card2) 88%, transparent);
+      border: 1px solid color-mix(in srgb, var(--border) 80%, #fff 20%);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
     .sideFooter {
       flex: 0 0 auto;
       margin-top: auto;
@@ -219,6 +231,24 @@
       border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
       transform: translateY(-1px);
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+    .contactRemoveBtn {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255,90,107,.35);
+      background: linear-gradient(135deg, rgba(255,90,107,.95), rgba(255,47,91,.95));
+      color: #fff;
+      display: none;
+      align-items: center;
+      box-shadow: 0 6px 16px rgba(255,90,107,.28);
+    }
+    .contactRemoveBtn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(255,90,107,.34);
+      filter: brightness(1.03);
     }
     .groupMembersBtn {
       height: 34px;
@@ -358,6 +388,38 @@
     .user:hover { background:rgba(47,107,255,.08); }
     .user.active { background:rgba(47,107,255,.13); border-color:var(--border); }
     .sideStatus { font-size: 12px; color:var(--muted); }
+    .userInfo {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .userAvatar {
+      width: 30px;
+      min-width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--accent) 18%, var(--card2));
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+      color: color-mix(in srgb, var(--text) 86%, #fff 14%);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .2px;
+      user-select: none;
+    }
+    .userAvatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 999px;
+    }
     .badge {
       min-width: 18px;
       height: 18px;
@@ -376,8 +438,71 @@
     .chat { display:flex; flex-direction:column; min-height:0; height: calc(100vh - 60px); border-radius: 24px; }
     .chatTop { padding: 22px 28px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
     .chatTitle { font-weight:700; }
+    .profileMenuWrap { position: relative; display: inline-flex; }
+    .profileBtn {
+      width: 32px;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .2px;
+      cursor: pointer;
+      background: color-mix(in srgb, var(--accent) 15%, var(--card2));
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+      color: color-mix(in srgb, var(--text) 86%, #fff 14%);
+    }
+    .profileBtn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 999px;
+      display: block;
+    }
+    .profilePopup {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 160px;
+      padding: 6px;
+      border-radius: 9px;
+      border: 1px solid color-mix(in srgb, var(--border) 80%, #fff 20%);
+      background: #fff;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, .18);
+      z-index: 40;
+    }
+    html[data-theme="dark"] .profilePopup {
+      background: color-mix(in srgb, var(--card) 94%, #1f2937 6%);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, .45);
+    }
+    .profilePopup.hidden { display: none; }
+    .profilePopupAction {
+      width: 100%;
+      height: 34px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text);
+      justify-content: flex-start;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0 10px;
+      cursor: pointer;
+      box-shadow: none;
+    }
+    .profilePopupAction:hover {
+      transform: none;
+      box-shadow: none;
+      background: color-mix(in srgb, var(--card2) 75%, rgba(47,107,255,.12));
+    }
     .messages { flex:1; padding:20px 28px; overflow:auto; display:flex; flex-direction:column; gap:10px; min-height:0; align-items:flex-start; }
-    .msg { position:relative; display:inline-block; padding:13px 16px; border-radius:var(--radius-md); max-width:70%; width:fit-content; word-break: break-word; border:1px solid var(--border); background:rgba(255,255,255,.45); }
+    .msg { position:relative; display:inline-block; padding:13px 78px 13px 16px; border-radius:var(--radius-md); max-width:70%; width:fit-content; word-break: break-word; border:1px solid var(--border); background:rgba(255,255,255,.45); }
     .msg.me { align-self:flex-end; margin-left:0; background:rgba(47,107,255,.12); border-color:rgba(47,107,255,.25); }
     .meta { font-size:12px; color:var(--muted); display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
     .text { font-size:14px; line-height:1.35; white-space:pre-wrap; }
@@ -534,10 +659,11 @@
     }
     .imageTile {
       position:relative;
+      width:64px;
+      height:64px;
       border-radius:12px;
       overflow:hidden;
       cursor:pointer;
-      aspect-ratio:1/1;
       background:rgba(255,255,255,0.05);
       border:1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
       padding:0;
@@ -545,11 +671,13 @@
       display:block;
     }
     .attThumb {
+      position:absolute;
+      inset:0;
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
-      transition:transform 0.2s ease;
+      transition:transform 0.2s ease, opacity .15s ease;
     }
     .imageTile:hover .attThumb {
       transform:scale(1.05);
@@ -560,6 +688,7 @@
       background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.18), rgba(255,255,255,.08));
       background-size: 200% 100%;
       animation: attSkeletonPulse 1.2s ease-in-out infinite;
+      transition: opacity .15s ease;
     }
     @keyframes attSkeletonPulse {
       0% { background-position: 0% 50%; }
@@ -610,6 +739,40 @@
       border-color: color-mix(in srgb, var(--accent) 52%, var(--border));
       background: color-mix(in srgb, var(--card2) 62%, rgba(47,107,255,.24));
       box-shadow: 0 8px 18px rgba(47,107,255,.16);
+    }
+    .attFileList {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+      max-width: 320px;
+    }
+    .attFileRow {
+      border-radius:12px;
+      padding:8px 10px;
+      border:1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+      background: color-mix(in srgb, var(--card2) 84%, rgba(47,107,255,.08));
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-height:38px;
+    }
+    .attFileName {
+      flex:1;
+      min-width:0;
+      font-size:12px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .attFileDownload {
+      flex:0 0 auto;
+      white-space:nowrap;
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:12px;
+      line-height:1;
+      min-height:26px;
     }
     .audioPlayer {
       min-width:220px;
@@ -1101,6 +1264,12 @@
       pointer-events: none;
       transition: opacity .15s ease;
     }
+    .msg > .meta > .reactAddBtn {
+      position: absolute;
+      top: 8px;
+      right: 44px;
+      margin: 0;
+    }
     .msg:hover .msgActions { opacity: 1; pointer-events: auto; }
     .msg .moreBtn{ display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border:none; background:transparent; cursor:pointer; padding:0; border-radius:8px; opacity:.85; }
     .msg .moreBtn:hover{ opacity:1; background: rgba(255,255,255,0.08); }
@@ -1250,10 +1419,20 @@
               <button id="btnAddGroupMember" class="groupAddBtn btn-primary" type="button" style="display:none;"><span class="icon" aria-hidden="true">➕</span><span class="label">Добавить</span></button>
               <button id="btnGroupMembers" class="groupMembersBtn" type="button" style="display:none;">Участники: …</button>
               <button id="btnLeaveGroup" class="groupLeaveBtn" type="button" title="Выйти из группы" aria-label="Выйти из группы">🚪 Выйти</button>
+              <button id="btnRemoveContact" class="contactRemoveBtn" type="button" style="display:none;">Удалить из друзей</button>
               <button id="btnDeleteGroup" class="btn-primary btn-danger" style="display:none;">Удалить группу</button>
+              <div class="profileMenuWrap">
+                <button id="profileMenuButton" class="profileBtn" type="button" title="Профиль" aria-label="Профиль" style="display:none;">??</button>
+                <div id="profileMenuPopup" class="profilePopup hidden" role="menu" aria-hidden="true">
+                  <button id="profileChangeAvatar" class="profilePopupAction" type="button" role="menuitem">Сменить аватар</button>
+                  <button id="profileLogout" class="profilePopupAction" type="button" role="menuitem">Выйти</button>
+                </div>
+              </div>
+              <input id="profileAvatarInput" type="file" accept="image/*" style="display:none;" />
             </div>
           </div>
 
+          <button id="loadMoreBtn" class="btnSecondary hidden" type="button">Загрузить ещё</button>
           <div class="messages" id="messages"></div>
 
           <div id="replyBar" class="replyBar" aria-live="polite">
@@ -1266,7 +1445,7 @@
           <div class="composer">
             <input id="message" placeholder="Сообщение…" disabled />
             <div id="attachHint" class="hint attachHintInline"></div>
-            <input id="attachment" type="file" accept="image/*,audio/*,*/*" multiple disabled style="display:none" />
+            <input id="attachment" type="file" accept="*/*" multiple disabled style="display:none" />
             <button type="button" id="attachBtn" class="attachBtn" title="Прикрепить" aria-label="Прикрепить" disabled>📎</button>
             <button type="button" id="recordBtn" class="attachBtn recordBtn" title="Записать аудио" aria-label="Записать аудио" disabled>
               <span aria-hidden="true">🎤</span>
@@ -1359,8 +1538,14 @@
 
     const elApp = document.getElementById("app");
     const elMessages = document.getElementById("messages");
+    const elLoadMoreBtn = document.getElementById("loadMoreBtn");
+    const INFINITE_SCROLL_ENABLED = true;
     function isNearBottom(el, thresholdPx = 80) {
       return el.scrollHeight - el.scrollTop - el.clientHeight < thresholdPx;
+    }
+
+    function shouldLoadMoreOnScroll(scroller) {
+      return scroller.scrollTop < 80;
     }
 
     function scrollToBottom() {
@@ -1400,9 +1585,15 @@
     const elBtnDeleteGroup = document.getElementById("btnDeleteGroup");
     const elBtnLeaveGroup = document.getElementById("btnLeaveGroup");
     const elBtnGroupMembers = document.getElementById("btnGroupMembers");
+    const elBtnRemoveContact = document.getElementById("btnRemoveContact");
     const elContactUsername = document.getElementById("contactUsername");
     const elBtnAddContact = document.getElementById("btnAddContact");
     const elThemeToggle = document.getElementById("themeToggle");
+    const elProfileMenuButton = document.getElementById("profileMenuButton");
+    const elProfileMenuPopup = document.getElementById("profileMenuPopup");
+    const elProfileChangeAvatar = document.getElementById("profileChangeAvatar");
+    const elProfileLogout = document.getElementById("profileLogout");
+    const elProfileAvatarInput = document.getElementById("profileAvatarInput");
     const elCreateGroupModal = document.getElementById("createGroupModal");
     const elGroupModalName = document.getElementById("groupModalName");
     const elGroupSelectedChips = document.getElementById("groupSelectedChips");
@@ -1425,6 +1616,12 @@
         const current = document.documentElement.getAttribute("data-theme") || "light";
         setTheme(current === "dark" ? "light" : "dark");
       });
+    }
+    if (elLoadMoreBtn) {
+      elLoadMoreBtn.addEventListener("click", loadOlderHistory);
+    }
+    if (elMessages) {
+      elMessages.addEventListener("scroll", onMessagesScroll, { passive: true });
     }
 
     let socket = null;
@@ -1549,6 +1746,9 @@
     let toastTimer = null;
     const audioPlayer = new Audio();
     const audioUrlCache = new Map();
+    const usersById = new Map();
+    const avatarKeyByUserId = new Map();
+    const avatarUrlCache = new Map();
     let playingAudioKey = null;
     let playingAudioMsgId = null;
     let audioPlayToken = 0;
@@ -1556,6 +1756,20 @@
     let currentAudioKey = null;
     const groupMembersCache = {};
     const groupMembersLoading = new Set();
+    let profileMenuOpen = false;
+
+    let currentChatType = null; // "dm" | "group"
+    let currentPeerUserId = null;
+    let currentGroupId = null;
+
+    let dmBeforeId = null;
+    let dmHasMore = false;
+
+    let groupBeforeId = null;
+    let groupHasMore = false;
+
+    const HISTORY_PAGE_SIZE = 50;
+    let isLoadingMore = false;
 
     let galleryOverlay = null;
     let galleryImage = null;
@@ -1845,6 +2059,153 @@
       return url;
     }
 
+    async function ensureAvatarUrl(key) {
+      if (!key) throw new Error("avatar key missing");
+      if (avatarUrlCache.has(key)) return avatarUrlCache.get(key);
+      const url = await ensureUrl(key);
+      avatarUrlCache.set(key, url);
+      return url;
+    }
+
+    function getInitials(username) {
+      const text = String(username || "").trim();
+      if (!text) return "?";
+      const parts = text.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return text.slice(0, 2).toUpperCase();
+    }
+
+    function resolveAvatarKeyForUserId(userId, fallbackAvatarKey = "") {
+      const uid = Number(userId);
+      if (!uid) return "";
+      const avatarKey = avatarKeyByUserId.get(uid);
+      if (avatarKey) return avatarKey;
+      return typeof fallbackAvatarKey === "string" ? fallbackAvatarKey : "";
+    }
+
+    function createContactAvatar(username, avatarKey) {
+      const avatar = document.createElement("div");
+      avatar.className = "userAvatar";
+      avatar.textContent = getInitials(username);
+
+      if (!avatarKey) return avatar;
+
+      ensureAvatarUrl(avatarKey)
+        .then((url) => {
+          if (!url) return;
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = `Аватар ${username || "пользователя"}`;
+          avatar.textContent = "";
+          avatar.appendChild(img);
+        })
+        .catch(() => {
+          avatar.textContent = getInitials(username);
+        });
+
+      return avatar;
+    }
+
+    function renderProfileMenuButton() {
+      if (!elProfileMenuButton) return;
+      const username = String(me || "").trim();
+      const avatarKey = resolveAvatarKeyForUserId(meId, usersById.get(Number(meId))?.avatar_key || "");
+      elProfileMenuButton.textContent = getInitials(username || "?");
+      elProfileMenuButton.innerHTML = elProfileMenuButton.textContent;
+
+      if (!avatarKey) return;
+
+      ensureAvatarUrl(avatarKey)
+        .then((url) => {
+          if (!url || !elProfileMenuButton) return;
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = `Аватар ${username || "пользователя"}`;
+          elProfileMenuButton.textContent = "";
+          elProfileMenuButton.appendChild(img);
+        })
+        .catch(() => {
+          if (!elProfileMenuButton) return;
+          elProfileMenuButton.textContent = getInitials(username || "?");
+        });
+    }
+
+    function setProfileMenuOpen(open) {
+      profileMenuOpen = !!open;
+      if (!elProfileMenuPopup) return;
+      elProfileMenuPopup.classList.toggle("hidden", !profileMenuOpen);
+      elProfileMenuPopup.setAttribute("aria-hidden", profileMenuOpen ? "false" : "true");
+    }
+
+    async function handleProfileAvatarChange(file) {
+      if (!file || !token) return;
+      const isImage = String(file.type || "").toLowerCase().startsWith("image/");
+      if (!isImage) {
+        showToast("Выберите изображение");
+        return;
+      }
+
+      const uploaded = await uploadAttachments([file]);
+      const avatarKey = uploaded?.[0]?.key;
+      if (!avatarKey) throw new Error("Не удалось получить ключ аватара");
+
+      const response = await apiPost("/api/profile/avatar", { avatarKey });
+      if (!response?.ok) throw new Error("Не удалось обновить аватар профиля");
+
+      const myId = Number(
+        (typeof currentUserId !== "undefined" ? currentUserId : null) ||
+        me?.id ||
+        meId ||
+        localStorage.getItem("userId") ||
+        localStorage.getItem("meId") ||
+        0
+      );
+
+      if (myId) {
+        avatarKeyByUserId.set(myId, avatarKey);
+
+        const mappedUser = usersById.get(myId);
+        if (mappedUser) mappedUser.avatar_key = avatarKey;
+
+        const meUser = usersById.get(myId) || { id: myId, username: String(me || ""), avatar_key: "" };
+        meUser.avatar_key = avatarKey;
+        usersById.set(myId, meUser);
+      }
+
+      if (avatarUrlCache?.clear) avatarUrlCache.clear();
+
+      await loadUsersDirectory();
+      renderContacts(contactsCache);
+      renderProfileMenuButton();
+
+      console.log("avatar updated", { myId, avatarKey });
+      showToast("Аватар обновлён");
+    }
+
+    async function loadUsersDirectory() {
+      const r = await apiGet("/api/users");
+      const users = Array.isArray(r?.users) ? r.users : [];
+
+      usersById.clear();
+      avatarKeyByUserId.clear();
+
+      users.forEach((user) => {
+        const uid = Number(user?.id);
+        if (!uid) return;
+        const avatarKey = typeof user?.avatar_key === "string" ? user.avatar_key.trim() : "";
+
+        usersById.set(uid, {
+          id: uid,
+          username: String(user?.username || ""),
+          avatar_key: avatarKey,
+        });
+
+        if (avatarKey) avatarKeyByUserId.set(uid, avatarKey);
+      });
+
+      return users;
+    }
+
     async function renderGallery() {
       if (!gallery.isOpen || !galleryOverlay) return;
       const total = gallery.keys.length;
@@ -1883,6 +2244,8 @@
         .map((a, idx) => ({
           key: a?.key || "",
           type: a?.type || null,
+          name: a?.name || "",
+          size: Number(a?.size) || 0,
           order: Number.isFinite(Number(a?.order)) ? Number(a.order) : idx,
         }))
         .filter((a) => a.key)
@@ -2133,17 +2496,17 @@
           thumb.alt = "Вложение";
           thumb.loading = "lazy";
           thumb.decoding = "async";
-          thumb.style.display = "none";
+          thumb.style.opacity = "0";
+          thumb.style.visibility = "hidden";
 
           tile.append(skeleton, thumb);
 
-          const scroller = elMessages;
-          const stick = isNearBottom(scroller, 80);
           thumb.addEventListener("load", () => {
-            thumb.style.display = "block";
-            skeleton.remove();
-            console.log("thumb loaded", { stick });
-            if (stick) scrollToBottom();
+            skeleton.style.opacity = "0";
+            skeleton.style.visibility = "hidden";
+            thumb.style.opacity = "1";
+            thumb.style.visibility = "visible";
+            if (isNearBottom(elMessages, 80)) scrollToBottom();
           });
           thumb.addEventListener("error", () => {
             // Оставляем skeleton для неуспешных загрузок
@@ -2196,21 +2559,33 @@
       }
 
       if (fileAttachments.length) {
-        const pills = document.createElement("div");
-        pills.className = "attPills";
+        const fileList = document.createElement("div");
+        fileList.className = "attFileList";
         fileAttachments.forEach((att) => {
-          const type = String(att.type || "").toLowerCase();
-          const isAudio = type.startsWith("audio");
-          const pill = document.createElement("button");
-          pill.type = "button";
-          pill.className = "attPill";
-          pill.dataset.attachKey = att.key;
-          pill.dataset.attachMsgid = messageId;
-          pill.dataset.attachType = att.type || "file";
-          pill.innerHTML = isAudio ? "<span>🎵</span><span>Аудио</span>" : "<span>📎</span><span>Файл</span>";
-          pills.appendChild(pill);
+          const row = document.createElement("div");
+          row.className = "attFileRow";
+
+          const fileDisplayName = prettyFilenameFromKey(att.key);
+
+          const name = document.createElement("div");
+          name.className = "attFileName";
+          name.textContent = `📎 ${fileDisplayName}`;
+          name.title = fileDisplayName;
+
+          const downloadBtn = document.createElement("button");
+          downloadBtn.type = "button";
+          downloadBtn.className = "attFileDownload";
+          downloadBtn.dataset.attachDownload = "1";
+          downloadBtn.dataset.attachKey = att.key;
+          downloadBtn.dataset.attachMsgid = messageId;
+          downloadBtn.dataset.attachType = att.type || "file";
+          downloadBtn.dataset.attachFilename = fileDisplayName;
+          downloadBtn.textContent = "Скачать";
+
+          row.append(name, downloadBtn);
+          fileList.appendChild(row);
         });
-        attachWrap.appendChild(pills);
+        attachWrap.appendChild(fileList);
       }
 
       wrap.appendChild(attachWrap);
@@ -2546,6 +2921,11 @@
       elBtnRegister.disabled = loggedIn;
       elBtnLogin.disabled = loggedIn;
       if (elBtnLogout) elBtnLogout.style.display = loggedIn ? "inline-flex" : "none";
+      if (elProfileMenuButton) {
+        elProfileMenuButton.style.display = loggedIn ? "inline-flex" : "none";
+        if (loggedIn) renderProfileMenuButton();
+      }
+      if (!loggedIn) setProfileMenuOpen(false);
       elBtnCreateGroup.disabled = !loggedIn;
       elBtnAddContact.disabled = !loggedIn;
       elContactUsername.disabled = !loggedIn;
@@ -2577,7 +2957,31 @@
       if (elBtnLeaveGroup) {
         elBtnLeaveGroup.style.display = canLeaveActiveGroup() ? "inline-flex" : "none";
       }
+      if (elBtnRemoveContact) {
+        const canRemoveContact = Boolean(activeChat?.type === "dm" && Number(activeChat?.userId) > 0);
+        elBtnRemoveContact.style.display = canRemoveContact ? "inline-flex" : "none";
+      }
       updateGroupMembersButton();
+    }
+
+    async function removeActiveContact() {
+      const targetUserId = Number(activeChat?.userId);
+      if (!token || activeChat?.type !== "dm" || !targetUserId) return;
+      if (!confirm("Удалить из друзей?")) return;
+
+      try {
+        const headers = { Authorization: "Bearer " + token };
+        const res = await fetch(`/api/contacts/${targetUserId}`, { method: "DELETE", headers });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json?.ok === false) throw new Error(json.error || `HTTP ${res.status}`);
+
+        showToast("Удалено из друзей");
+        const contacts = await loadContacts().catch(() => []);
+        contactsCache = contacts;
+        renderContacts(contactsCache);
+      } catch (e) {
+        showToast(e?.message ? `Ошибка: ${e.message}` : "Не удалось удалить из друзей");
+      }
     }
 
     function updateGroupMembersButton() {
@@ -2611,6 +3015,12 @@
       activeChat = null;
       syncActiveChatHighlight();
       clearChatUi();
+      currentChatType = null;
+      currentPeerUserId = null;
+      currentGroupId = null;
+      dmHasMore = false;
+      groupHasMore = false;
+      updateLoadMoreUi();
       elChatTitle.textContent = "Выбери группу или пользователя слева";
       updateGroupMembersButton();
       setAuthUi(!!me);
@@ -2818,7 +3228,12 @@
 
       if (activeChat.type === "dm") {
         const peerId = Number(activeChat.userId);
-        (dmHistory[peerId] || []).forEach(addMessageDM);
+        const messages = dmHistory[peerId] || [];
+        messages.forEach(addMessageDM);
+        console.log("render DM", {
+          apiCount: messages.length,
+          renderedCount: elMessages.querySelectorAll(".msg").length,
+        });
       } else {
         const gid = Number(activeChat.groupId);
         (groupHistory[gid] || []).forEach(addMessageGroup);
@@ -2833,6 +3248,12 @@
       if (shouldResetPending) clearPendingReply();
 
       activeChat = { type:"dm", ...user, userId: nextUserId };
+      currentChatType = "dm";
+      currentPeerUserId = nextUserId;
+      currentGroupId = null;
+      dmBeforeId = null;
+      dmHasMore = false;
+      updateLoadMoreUi();
       resetUnreadKey(getActiveKey());
       syncActiveChatHighlight();
       elChatTitle.textContent = `Чат с: ${user.username}`;
@@ -2841,6 +3262,7 @@
       rerenderActiveChat();
       await loadDmHistoryFromDb(activeChat.userId);
       rerenderActiveChat();
+      updateLoadMoreUi();
 
       if (socket && activeChat.userId) {
         socket.emit("chat:read", { peerUserId: activeChat.userId });
@@ -2860,6 +3282,12 @@
         title: group.title,
         createdBy: Number(group.created_by),
       };
+      currentChatType = "group";
+      currentGroupId = gid;
+      currentPeerUserId = null;
+      groupBeforeId = null;
+      groupHasMore = false;
+      updateLoadMoreUi();
       resetUnreadKey(getActiveKey());
       syncActiveChatHighlight();
       elChatTitle.textContent = `Группа: ${group.title}`;
@@ -2868,6 +3296,7 @@
       rerenderActiveChat();
       await loadGroupHistoryFromDb(gid);
       rerenderActiveChat();
+      updateLoadMoreUi();
       updateGroupMembersButton();
       await ensureGroupMembersLoaded(gid).catch(() => {});
     }
@@ -2986,6 +3415,7 @@
         updateGroupMembersButton();
         renderGroupMembersModal();
         showToast("Пользователь удалён");
+
         const groups = await loadGroups().catch(() => []);
         renderGroups(groups);
       } catch (e) {
@@ -3186,6 +3616,7 @@ function formatLastSeen(lastSeenAt) {
       window._contacts = (contacts || []).map(contact => ({
         id: Number(contact.id),
         username: contact.username,
+        avatar_key: resolveAvatarKeyForUserId(contact.id, contact.avatar_key),
       }));
       elContactsList.innerHTML = "";
 
@@ -3204,6 +3635,14 @@ function formatLastSeen(lastSeenAt) {
         const row = document.createElement("div");
         row.className = "user" + (activeChat?.type === "dm" && Number(activeChat.userId) === uid ? " active" : "");
         row.dataset.chatKey = keyForPeer(uid);
+        row.dataset.userId = String(uid);
+
+        const avatarKey = resolveAvatarKeyForUserId(uid, contact.avatar_key);
+        const avatar = createContactAvatar(contact.username, avatarKey);
+        row.appendChild(avatar);
+
+        const infoWrap = document.createElement("div");
+        infoWrap.className = "userInfo";
 
         const nameDiv = document.createElement("div");
         nameDiv.className = "chat-title";
@@ -3220,8 +3659,9 @@ function formatLastSeen(lastSeenAt) {
           badge.textContent = "offline";
         }
 
-        row.appendChild(nameDiv);
-        row.appendChild(badge);
+        infoWrap.appendChild(nameDiv);
+        infoWrap.appendChild(badge);
+        row.appendChild(infoWrap);
         const unreadBadge = document.createElement("span");
         unreadBadge.className = "badge";
         unreadBadge.style.display = "none";
@@ -3552,6 +3992,48 @@ function formatLastSeen(lastSeenAt) {
       return parts.length ? parts[parts.length - 1] : "file";
     }
 
+    function extractOriginalFileName(key) {
+      const base = basename(key);
+      const firstUnderscoreIdx = base.indexOf("_");
+      if (firstUnderscoreIdx > -1 && firstUnderscoreIdx < base.length - 1) {
+        return base.slice(firstUnderscoreIdx + 1);
+      }
+      return base;
+    }
+
+    function prettyFilenameFromKey(key) {
+      const base = String(key || "").split("/").pop() || "";
+      // base like "<uuid>__Name_with_underscores.ext" or "<uuid>_Name.ext" or just "Name.ext"
+      // remove uuid prefix if present
+      const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}[_-]{1,2}/i;
+      let name = base.replace(uuidRe, "");
+      // also handle "__" delimiter if still present
+      if (name.includes("__")) name = name.split("__").pop();
+      // turn underscores into spaces for display (but keep extension)
+      name = name.replace(/_+/g, " ").trim();
+      if (name && !/^\.[^.]+$/.test(name)) return name;
+
+      const fallbackBase = extractOriginalFileName(key).replace(uuidRe, "").trim();
+      if (fallbackBase && !/^\.[^.]+$/.test(fallbackBase)) return fallbackBase;
+
+      return "Файл";
+    }
+
+    function filenameFromContentDisposition(cd) {
+      if (!cd) return "";
+      // Prefer filename*= (RFC 5987)
+      // Example: attachment; filename="________.docx"; filename*=UTF-8''%D0%A2%D0%B5%D1%81%D1%82.docx
+      const mStar = cd.match(/filename\*\s*=\s*UTF-8''([^;]+)/i);
+      if (mStar && mStar[1]) {
+        try {
+          return decodeURIComponent(mStar[1].trim().replace(/^"|"$/g, ""));
+        } catch {}
+      }
+      const m = cd.match(/filename\s*=\s*"?([^"]+)"?/i);
+      if (m && m[1]) return m[1].trim();
+      return "";
+    }
+
     function normalizeAttachments(rawAttachments, fallbackKey, fallbackType) {
       const normalized = Array.isArray(rawAttachments) ? rawAttachments : [];
       if (normalized.length) return normalized;
@@ -3559,9 +4041,45 @@ function formatLastSeen(lastSeenAt) {
       return [{ key: fallbackKey, type: fallbackType ?? null, order: 0 }];
     }
 
-    async function openAttachmentInNewTab(key) {
+    async function openAttachmentInNewTab(key, filename = "") {
       const url = await ensureUrl(key);
-      window.open(url, "_blank", "noopener");
+      const link = document.createElement("a");
+      link.href = url;
+      if (filename) link.download = filename;
+      link.target = "_blank";
+      link.rel = "noopener";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    async function downloadViaApi(key, name) {
+      const authToken = localStorage.getItem("token");
+      const url = `/api/uploads/download?key=${encodeURIComponent(key)}&name=${encodeURIComponent(name || "")}`;
+      const resp = await fetch(url, { headers: { Authorization: "Bearer " + authToken } });
+      if (!resp.ok) throw new Error("download failed " + resp.status);
+      const cd = resp.headers.get("content-disposition");
+      console.log("download headers", { status: resp.status, cd });
+      const serverName = filenameFromContentDisposition(cd);
+      const prettyFromKey = prettyFilenameFromKey(key);
+      console.log("download name candidates", {
+        uiName: name,
+        prettyFromKey,
+        serverName,
+      });
+      let finalName = serverName || name || prettyFromKey || "download";
+      if (finalName.startsWith(".") || finalName.length < 3) {
+        finalName = prettyFromKey || "download";
+      }
+      const blob = await resp.blob();
+      const a = document.createElement("a");
+      const objUrl = URL.createObjectURL(blob);
+      a.href = objUrl;
+      a.download = finalName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
     }
 
     async function apiPostNoBody(url) {
@@ -3574,11 +4092,8 @@ function formatLastSeen(lastSeenAt) {
       return json;
     }
 
-    async function loadDmHistoryFromDb(peerUserId) {
-      if (!token || !peerUserId) return;
-
-      const r = await apiGet(`/api/messages?peerUserId=${peerUserId}&limit=50`);
-      dmHistory[peerUserId] = (r.messages || []).map(m => ({
+    function normalizeDmMessage(m) {
+      return {
         id: Number(m.id),
         fromUserId: Number(m.from_user_id),
         toUserId: Number(m.to_user_id),
@@ -3596,7 +4111,109 @@ function formatLastSeen(lastSeenAt) {
         reply_to_message_id: m.reply_to_message_id ?? null,
         reply_to: m.reply_to ?? null,
         reactions: normalizeReactions(m.reactions),
-      }));
+      };
+    }
+
+    function normalizeGroupMessage(m) {
+      return {
+        id: Number(m.id),
+        fromUserId: Number(m.from_user_id),
+        name: m.from_username,
+        text: m.text,
+        attachment_key: m.attachment_key ?? null,
+        attachment_type: m.attachment_type ?? null,
+        attachments: normalizeAttachments(m.attachments, m.attachment_key, m.attachment_type),
+        ts: new Date(m.created_at).getTime(),
+        createdAtMs: new Date(m.created_at).getTime(),
+        editedAt: m.edited_at ? new Date(m.edited_at).getTime() : null,
+        deletedAt: m.deleted_at ? new Date(m.deleted_at).getTime() : null,
+        reply_to_message_id: m.reply_to_message_id ?? null,
+        reply_to: m.reply_to ?? null,
+        reactions: normalizeReactions(m.reactions),
+      };
+    }
+
+    function updateDmPagingState(peerUserId, fetchedMessages) {
+      const arr = dmHistory[peerUserId] || [];
+      dmBeforeId = arr.length ? Number(arr[0].id) : null;
+      dmHasMore = Array.isArray(fetchedMessages) && fetchedMessages.length === HISTORY_PAGE_SIZE;
+    }
+
+    function updateGroupPagingState(groupId, fetchedMessages) {
+      const arr = groupHistory[groupId] || [];
+      groupBeforeId = arr.length ? Number(arr[0].id) : null;
+      groupHasMore = Array.isArray(fetchedMessages) && fetchedMessages.length === HISTORY_PAGE_SIZE;
+    }
+
+    function updateLoadMoreUi() {
+      if (!elLoadMoreBtn) return;
+      const canShow =
+        (currentChatType === "dm" && dmHasMore && Number.isFinite(Number(currentPeerUserId))) ||
+        (currentChatType === "group" && groupHasMore && Number.isFinite(Number(currentGroupId)));
+      elLoadMoreBtn.classList.toggle("hidden", !canShow || INFINITE_SCROLL_ENABLED);
+      elLoadMoreBtn.disabled = isLoadingMore;
+      elLoadMoreBtn.textContent = isLoadingMore ? "Загрузка..." : "Загрузить ещё";
+    }
+
+    function hasCurrentChatSelection() {
+      return (
+        (currentChatType === "dm" && Number.isFinite(Number(currentPeerUserId))) ||
+        (currentChatType === "group" && Number.isFinite(Number(currentGroupId)))
+      );
+    }
+
+    async function onMessagesScroll() {
+      const scroller = elMessages;
+      if (!scroller || isLoadingMore) return;
+      if (!hasCurrentChatSelection()) return;
+
+      const hasMore = currentChatType === "dm" ? dmHasMore : groupHasMore;
+      if (!hasMore) return;
+      if (!shouldLoadMoreOnScroll(scroller)) return;
+
+      await loadOlderHistory();
+    }
+
+    function prependMessages(mode, messages) {
+      if (!Array.isArray(messages) || !messages.length) return;
+      const fragment = document.createDocumentFragment();
+      const prevActiveChat = activeChat;
+
+      messages.forEach((m) => {
+        if (mode === "dm") {
+          activeChat = { ...(activeChat || {}), type: "dm", userId: Number(currentPeerUserId) };
+          addMessageDM(m);
+        } else {
+          activeChat = { ...(activeChat || {}), type: "group", groupId: Number(currentGroupId) };
+          addMessageGroup(m);
+        }
+        fragment.appendChild(elMessages.lastElementChild);
+      });
+
+      activeChat = prevActiveChat;
+      elMessages.insertBefore(fragment, elMessages.firstChild);
+    }
+
+    async function loadDmHistoryFromDb(peerUserId) {
+      if (!token || !peerUserId) return;
+
+      const r = await apiGet(`/api/messages?peerUserId=${peerUserId}&limit=${HISTORY_PAGE_SIZE}`);
+      const fetched = r.messages || [];
+      const normalized = fetched.map(normalizeDmMessage);
+      dmHistory[peerUserId] = mergeDmMessages(dmHistory[peerUserId] || [], normalized);
+      updateDmPagingState(peerUserId, fetched);
+    }
+
+    function mergeDmMessages(existing, incoming) {
+      const byId = new Map();
+      const source = [...(Array.isArray(existing) ? existing : []), ...(Array.isArray(incoming) ? incoming : [])];
+
+      source.forEach((message) => {
+        if (!message || !Number.isFinite(Number(message.id))) return;
+        byId.set(Number(message.id), { ...message, id: Number(message.id) });
+      });
+
+      return Array.from(byId.values()).sort((a, b) => Number(a.id) - Number(b.id));
     }
 
     async function loadGroups() {
@@ -3726,23 +4343,77 @@ function formatLastSeen(lastSeenAt) {
     async function loadGroupHistoryFromDb(groupId) {
       if (!token || !groupId) return;
 
-      const r = await apiGet(`/api/groups/${groupId}/messages?limit=50`);
-      groupHistory[groupId] = (r.messages || []).map(m => ({
-        id: Number(m.id),
-        fromUserId: Number(m.from_user_id),
-        name: m.from_username,
-        text: m.text,
-        attachment_key: m.attachment_key ?? null,
-        attachment_type: m.attachment_type ?? null,
-        attachments: normalizeAttachments(m.attachments, m.attachment_key, m.attachment_type),
-        ts: new Date(m.created_at).getTime(),
-        createdAtMs: new Date(m.created_at).getTime(),
-        editedAt: m.edited_at ? new Date(m.edited_at).getTime() : null,
-        deletedAt: m.deleted_at ? new Date(m.deleted_at).getTime() : null,
-        reply_to_message_id: m.reply_to_message_id ?? null,
-        reply_to: m.reply_to ?? null,
-        reactions: normalizeReactions(m.reactions),
-      }));
+      const r = await apiGet(`/api/groups/${groupId}/messages?limit=${HISTORY_PAGE_SIZE}`);
+      const fetched = r.messages || [];
+      groupHistory[groupId] = fetched.map(normalizeGroupMessage);
+      updateGroupPagingState(groupId, fetched);
+    }
+
+    async function loadOlderHistory() {
+      if (!token || isLoadingMore) return;
+      if (currentChatType !== "dm" && currentChatType !== "group") return;
+
+      isLoadingMore = true;
+      updateLoadMoreUi();
+
+      try {
+        if (currentChatType === "dm") {
+          const peerUserId = Number(currentPeerUserId);
+          if (!peerUserId || !dmBeforeId) {
+            dmHasMore = false;
+            return;
+          }
+          const r = await apiGet(`/api/messages?peerUserId=${peerUserId}&limit=${HISTORY_PAGE_SIZE}&beforeId=${dmBeforeId}`);
+          const fetched = r.messages || [];
+          if (!fetched.length) {
+            dmHasMore = false;
+            return;
+          }
+          const normalized = fetched.map(normalizeDmMessage);
+          dmHistory[peerUserId] = mergeDmMessages(dmHistory[peerUserId] || [], normalized);
+
+          const scroller = elMessages;
+          const prevH = scroller.scrollHeight;
+          const prevTop = scroller.scrollTop;
+          prependMessages("dm", normalized);
+          const newH = scroller.scrollHeight;
+          scroller.scrollTop = prevTop + (newH - prevH);
+
+          const arr = dmHistory[peerUserId] || [];
+          dmBeforeId = arr.length ? Number(arr[0].id) : null;
+          dmHasMore = fetched.length === HISTORY_PAGE_SIZE;
+        } else if (currentChatType === "group") {
+          const groupId = Number(currentGroupId);
+          if (!groupId || !groupBeforeId) {
+            groupHasMore = false;
+            return;
+          }
+          const r = await apiGet(`/api/groups/${groupId}/messages?limit=${HISTORY_PAGE_SIZE}&beforeId=${groupBeforeId}`);
+          const fetched = r.messages || [];
+          if (!fetched.length) {
+            groupHasMore = false;
+            return;
+          }
+          const normalized = fetched.map(normalizeGroupMessage);
+          groupHistory[groupId] = mergeDmMessages(groupHistory[groupId] || [], normalized);
+
+          const scroller = elMessages;
+          const prevH = scroller.scrollHeight;
+          const prevTop = scroller.scrollTop;
+          prependMessages("group", normalized);
+          const newH = scroller.scrollHeight;
+          scroller.scrollTop = prevTop + (newH - prevH);
+
+          const arr = groupHistory[groupId] || [];
+          groupBeforeId = arr.length ? Number(arr[0].id) : null;
+          groupHasMore = fetched.length === HISTORY_PAGE_SIZE;
+        }
+      } catch (e) {
+        showToast(e?.message ? `Ошибка: ${e.message}` : "Не удалось загрузить историю");
+      } finally {
+        isLoadingMore = false;
+        updateLoadMoreUi();
+      }
     }
 
 function connectSocket() {
@@ -3850,10 +4521,7 @@ function connectSocket() {
           reactions: normalizeReactions(envelope.reactions || msg?.reactions),
         };
 
-        dmHistory[peerUserId] = dmHistory[peerUserId] || [];
-        const idx = dmHistory[peerUserId].findIndex(x => x.id === normalized.id);
-        if (idx >= 0) dmHistory[peerUserId][idx] = { ...dmHistory[peerUserId][idx], ...normalized };
-        else dmHistory[peerUserId].push(normalized);
+        dmHistory[peerUserId] = mergeDmMessages(dmHistory[peerUserId] || [], [normalized]);
 
         if (activeChat?.type === "dm" && Number(activeChat.userId) === peerUserId) {
           if (dmMsgDomById.has(normalized.id)) updateDmStatus(normalized.id, normalized.deliveredAt, normalized.readAt);
@@ -4124,6 +4792,9 @@ function connectSocket() {
 
     const MAX_MESSAGE_LEN = 2000;
     const MAX_ATTACHMENTS = 4;
+    const UPLOAD_MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    const UPLOAD_MAX_AUDIO_BYTES = 10 * 1024 * 1024;
+    const MAX_FILE_BYTES = 10 * 1024 * 1024;
     let isRecording = false;
     let mediaStream = null;
     let mediaRecorder = null;
@@ -4141,6 +4812,25 @@ function connectSocket() {
       const idx = name.lastIndexOf(".");
       if (idx < 0 || idx === name.length - 1) return "";
       return name.slice(idx + 1).toUpperCase();
+    }
+
+    function formatAttachmentSize(bytes) {
+      const size = Number(bytes) || 0;
+      if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+      return `${Math.max(1, Math.round(size / 1024))} KB`;
+    }
+
+    function getAttachmentKindFromMime(mime) {
+      const normalized = normalizeContentType(mime);
+      if (normalized.startsWith("image/")) return "image";
+      if (normalized.startsWith("audio/")) return "audio";
+      return "file";
+    }
+
+    function getMaxBytesForKind(kind) {
+      if (kind === "image") return UPLOAD_MAX_IMAGE_BYTES;
+      if (kind === "audio") return UPLOAD_MAX_AUDIO_BYTES;
+      return MAX_FILE_BYTES;
     }
 
     function getOrCreatePreviewUrl(file) {
@@ -4174,7 +4864,8 @@ function connectSocket() {
         item.className = "pendingAttItem";
         item.title = file.name || `Файл ${idx + 1}`;
 
-        if ((file.type || "").startsWith("image/")) {
+        const kind = getAttachmentKindFromMime(file.type);
+        if (kind === "image") {
           const img = document.createElement("img");
           img.alt = file.name || `Вложение ${idx + 1}`;
           img.src = getOrCreatePreviewUrl(file);
@@ -4185,11 +4876,16 @@ function connectSocket() {
 
           const icon = document.createElement("div");
           icon.className = "pendingAttIcon";
-          icon.textContent = (file.type || "").startsWith("audio/") ? "🔊" : "📎";
+          icon.textContent = kind === "audio" ? "🔊" : "📎";
 
           const ext = document.createElement("div");
           ext.className = "pendingAttExt";
-          ext.textContent = getFileExt(file.name) || "FILE";
+          if (kind === "file") {
+            ext.textContent = `${file.name || "file"} · ${formatAttachmentSize(file.size)}`;
+            ext.title = file.name || "file";
+          } else {
+            ext.textContent = getFileExt(file.name) || "AUDIO";
+          }
 
           meta.appendChild(icon);
           meta.appendChild(ext);
@@ -4227,7 +4923,15 @@ function connectSocket() {
         alert("Можно загрузить максимум 4 файла. Лишние файлы не добавлены.");
       }
 
-      const accepted = selected.slice(0, availableSlots);
+      const accepted = selected
+        .slice(0, availableSlots)
+        .filter((file) => {
+          const kind = getAttachmentKindFromMime(file.type);
+          const maxBytes = getMaxBytesForKind(kind);
+          if ((Number(file.size) || 0) <= maxBytes) return true;
+          alert(`Файл \"${file.name || "без имени"}\" превышает лимит ${formatAttachmentSize(maxBytes)} для типа ${kind}.`);
+          return false;
+        });
       if (!accepted.length) return;
       pendingFiles = pendingFiles.concat(accepted);
       renderAttachHint();
@@ -4431,11 +5135,14 @@ function connectSocket() {
           const file = files[i];
           if (typeof onFileStart === "function") onFileStart(i);
 
-          const rawType = String(file.type || "").toLowerCase();
-          const isImage = rawType.startsWith("image/");
-          const isAudio = rawType.startsWith("audio/");
-          const kind = isImage ? "image" : isAudio ? "audio" : "file";
+          const kind = getAttachmentKindFromMime(file.type);
+          const isAudio = kind === "audio";
           let contentType = normalizeContentType(file.type);
+          const maxBytes = getMaxBytesForKind(kind);
+
+          if ((Number(file.size) || 0) > maxBytes) {
+            throw new Error(`Файл \"${file.name || "без имени"}\" превышает лимит ${formatAttachmentSize(maxBytes)}.`);
+          }
 
           if (isAudio && contentType.startsWith("audio/")) {
             const lowerName = String(file.name || "").toLowerCase();
@@ -4446,12 +5153,13 @@ function connectSocket() {
 
           const presignResponse = await apiPost("/api/uploads/presign", {
             kind,
-            contentType
+            originalName: file.name,
+            contentType: file.type ? contentType : ""
           });
 
           const uploadRes = await fetch(presignResponse.uploadUrl, {
             method: "PUT",
-            headers: { "Content-Type": file.type || "application/octet-stream" },
+            headers: { "Content-Type": contentType || "application/octet-stream" },
             body: file
           });
 
@@ -4459,7 +5167,13 @@ function connectSocket() {
             throw new Error("Не удалось загрузить вложение");
           }
 
-          attachments.push({ key: presignResponse.key, type: kind });
+          attachments.push({
+            key: presignResponse.key,
+            type: kind,
+            name: file.name || basename(presignResponse.key),
+            size: Number(file.size) || 0,
+            contentType
+          });
         }
       } catch (e) {
         console.error(e);
@@ -4637,6 +5351,8 @@ function connectSocket() {
       const key = openBtn.dataset.attachKey;
       const messageId = openBtn.dataset.attachMsgid;
       const type = (openBtn.dataset.attachType || "").toLowerCase();
+      const filename = openBtn.dataset.attachFilename || extractOriginalFileName(key);
+      const isDownloadButton = openBtn.dataset.attachDownload === "1";
       if (!key || !messageId) return;
 
       const keys = messageAttachmentKeys.get(messageId) || [];
@@ -4644,10 +5360,13 @@ function connectSocket() {
       const isImage = !type || type.startsWith("image");
 
       try {
-        if (isImage && idx >= 0) {
+        if (isDownloadButton) {
+          const downloadName = prettyFilenameFromKey(key) || filename;
+          await downloadViaApi(key, downloadName);
+        } else if (isImage && idx >= 0) {
           openGallery(keys, idx);
         } else {
-          await openAttachmentInNewTab(key);
+          await openAttachmentInNewTab(key, filename);
         }
       } catch (err) {
         console.error(err);
@@ -4700,6 +5419,8 @@ function connectSocket() {
         setAuthUi(true);
         resetUnread();
         connectSocket();
+
+        await loadUsersDirectory();
 
         const groups = await loadGroups().catch(() => []);
         renderGroups(groups);
@@ -4762,6 +5483,51 @@ function connectSocket() {
     elBtnRegister.addEventListener("click", doRegister);
     elBtnLogin.addEventListener("click", doLogin);
     if (elBtnLogout) elBtnLogout.addEventListener("click", logout);
+    if (elProfileMenuButton) {
+      elProfileMenuButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setProfileMenuOpen(!profileMenuOpen);
+      });
+    }
+    if (elProfileMenuPopup) {
+      elProfileMenuPopup.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+    }
+    if (elProfileChangeAvatar) {
+      elProfileChangeAvatar.addEventListener("click", () => {
+        setProfileMenuOpen(false);
+        if (elProfileAvatarInput) {
+          elProfileAvatarInput.value = "";
+          elProfileAvatarInput.click();
+        }
+      });
+    }
+    if (elProfileLogout) {
+      elProfileLogout.addEventListener("click", () => {
+        setProfileMenuOpen(false);
+        logout();
+      });
+    }
+    if (elProfileAvatarInput) {
+      elProfileAvatarInput.addEventListener("change", async (event) => {
+        const file = event.target?.files?.[0];
+        if (!file) return;
+        try {
+          await handleProfileAvatarChange(file);
+        } catch (e) {
+          showToast(e?.message ? `Ошибка: ${e.message}` : "Не удалось обновить аватар");
+        } finally {
+          elProfileAvatarInput.value = "";
+        }
+      });
+    }
+    document.addEventListener("click", (event) => {
+      if (!profileMenuOpen || !elProfileMenuPopup || !elProfileMenuButton) return;
+      const target = event.target;
+      if (elProfileMenuPopup.contains(target) || elProfileMenuButton.contains(target)) return;
+      setProfileMenuOpen(false);
+    });
 
     elBtnCreateGroup.addEventListener("click", () => {
       openCreateGroupModal();
@@ -4838,6 +5604,7 @@ function connectSocket() {
     elBtnDeleteGroup.addEventListener("click", deleteActiveGroup);
     if (elBtnAddGroupMember) elBtnAddGroupMember.addEventListener("click", addMembersToActiveGroup);
     elBtnLeaveGroup.addEventListener("click", leaveActiveGroup);
+    if (elBtnRemoveContact) elBtnRemoveContact.addEventListener("click", removeActiveContact);
     if (elBtnGroupMembers) elBtnGroupMembers.addEventListener("click", openGroupMembersModal);
     if (elBtnCloseGroupMembers) elBtnCloseGroupMembers.addEventListener("click", closeGroupMembersModal);
     if (elGroupMembersModal) {
@@ -4877,7 +5644,7 @@ function connectSocket() {
       meId = Number(savedMeId);
 
       try {
-        await apiGet("/api/users");
+        await loadUsersDirectory();
         elAuthStatus.textContent = `✅ Logged in: ${me} (restore)`;
         setAuthUi(true);
         resetUnread();
